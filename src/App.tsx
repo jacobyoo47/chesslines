@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import './App.css'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import Board from './components/Board'
+
+// Main app theme
+const chessTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#20FC8F',
+    },
+    secondary: {
+      main: '#3F5E5A',
+    },
+
+    // Background colors
+    info: {
+      main: '#2D2D2A',
+      light: '#353831',
+    },
+  },
+})
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ThemeProvider theme={chessTheme}>
+        <Board />
+      </ThemeProvider>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
