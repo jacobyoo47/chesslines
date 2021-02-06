@@ -1,6 +1,7 @@
 import React from 'react'
 import Chessboard from 'chessboardjsx'
 import { makeStyles } from '@material-ui/core/styles'
+import { startPos } from '../static/positions'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,10 +17,7 @@ function Board(): JSX.Element {
 
   return (
     <div className={classes.root}>
-      <Chessboard
-        width={1200}
-        position="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-      />
+      <Chessboard position={startPos} />
     </div>
   )
 }
