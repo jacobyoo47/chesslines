@@ -5,6 +5,7 @@ import Piece from './pieces/Piece'
 import { startPos } from '../static/positions'
 import { render } from '@testing-library/react'
 import King from './pieces/King'
+import Queen from './pieces/Queen'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,7 +29,10 @@ function renderSquare(
 const initializePosition = (fen: string): Array<Piece> => {
   const squares = Array(64).fill(null)
 
+  squares[59] = new Queen('white')
   squares[60] = new King('white')
+
+  squares[3] = new Queen('black')
   squares[4] = new King('black')
 
   return squares
