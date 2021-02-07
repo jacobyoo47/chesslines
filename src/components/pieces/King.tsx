@@ -22,9 +22,9 @@ export default class King extends Piece {
       src - 1 === dest
     )
   }
-  
+
   // Path is always empty since King moves by only one square
-  getSrcToDestPath(src: number, dest: number){
-    return [];
+  getSrcToDestPath(src: number, dest: number) {
+    return []
   }
 }

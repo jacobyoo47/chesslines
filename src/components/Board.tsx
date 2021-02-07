@@ -6,6 +6,10 @@ import { startPos } from '../static/positions'
 import { render } from '@testing-library/react'
 import King from './pieces/King'
 import Queen from './pieces/Queen'
+import Bishop from './pieces/Bishop'
+import Knight from './pieces/Knight'
+import Rook from './pieces/Rook'
+import Pawn from './pieces/Pawn'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,11 +33,28 @@ function renderSquare(
 const initializePosition = (fen: string): Array<Piece> => {
   const squares = Array(64).fill(null)
 
-  squares[59] = new Queen('white')
-  squares[60] = new King('white')
+  for (let i = 8; i < 16; i++) {
+    squares[i] = new Pawn('black')
+    squares[i+40] = new Pawn('white')
+  }
 
+  squares[0] = new Rook('black')
+  squares[1] = new Knight('black')
+  squares[2] = new Bishop('black')
   squares[3] = new Queen('black')
   squares[4] = new King('black')
+  squares[5] = new Bishop('black')
+  squares[6] = new Knight('black')
+  squares[7] = new Rook('black')
+
+  squares[56] = new Rook('white')
+  squares[57] = new Knight('white')
+  squares[58] = new Bishop('white')
+  squares[59] = new Queen('white')
+  squares[60] = new King('white')
+  squares[61] = new Bishop('white')
+  squares[62] = new Knight('white')
+  squares[63] = new Rook('white')
 
   return squares
 }
