@@ -1,12 +1,12 @@
-import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import Piece from './pieces/Piece'
 
 const useStyles = makeStyles((theme) => ({
   square: {
     backgroundColor: '#DDA15E',
-    height: 128,
-    width: 128,
-    border: '1px solid black',
+    height: '12em',
+    width: '12em',
+    border: '.1em solid transparent',
     borderRadius: 0,
     margin: '-1px',
     padding: 1,
@@ -20,17 +20,28 @@ const useStyles = makeStyles((theme) => ({
 
 interface squareProps {
   isLight: boolean
+  piece?: Piece
 }
 
-function Square({ isLight }: squareProps): JSX.Element {
+function Square({ isLight, piece }: squareProps): JSX.Element {
   const classes = useStyles()
   const squareColor = isLight ? '#DDA15E' : '#BC6C25'
+  const iconUrl = piece ? piece.iconUrl : ''
   return (
     <button
       className={classes.square}
-      style={{ backgroundColor: squareColor }}
+      style={{
+        backgroundColor: squareColor,
+        backgroundImage: iconUrl,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+      }}
     />
   )
+}
+
+Square.defaultProps = {
+  piece: null,
 }
 
 export default Square
