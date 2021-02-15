@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface pieceProps {
   player: string
   icon: string

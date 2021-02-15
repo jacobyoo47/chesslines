@@ -2,8 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Square from './Square'
 import Piece from './pieces/Piece'
-import { startPos } from '../static/positions'
-import { render } from '@testing-library/react'
+import { startPos, oneE4, e4c5Nf3 } from '../static/positions'
 import King from './pieces/King'
 import Queen from './pieces/Queen'
 import Bishop from './pieces/Bishop'
@@ -19,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function isEven(num: number): boolean {
-  return num % 2 == 0
+  return num % 2 === 0
 }
 
 function renderSquare(
@@ -32,29 +31,55 @@ function renderSquare(
 
 const initializePosition = (fen: string): Array<Piece> => {
   const squares = Array(64).fill(null)
+  const fenList = fen.split(' ')
+  const position = fenList[0].split('')
+  const reUpper = /[A-Z]/
 
-  for (let i = 8; i < 16; i++) {
-    squares[i] = new Pawn('black')
-    squares[i+40] = new Pawn('white')
+  let i = 0
+  let j = 0
+  while (i < 64) {
+    const curr = position[j]
+    const player = reUpper.test(curr) ? 'white' : 'black'
+    switch (curr.toLowerCase()) {
+      case 'r': {
+        squares[i] = new Rook(player)
+        i += 1
+        break
+      }
+      case 'n': {
+        squares[i] = new Knight(player)
+        i += 1
+        break
+      }
+      case 'b': {
+        squares[i] = new Bishop(player)
+        i += 1
+        break
+      }
+      case 'k': {
+        squares[i] = new King(player)
+        i += 1
+        break
+      }
+      case 'q': {
+        squares[i] = new Queen(player)
+        i += 1
+        break
+      }
+      case 'p': {
+        squares[i] = new Pawn(player)
+        i += 1
+        break
+      }
+      default: {
+        if (curr >= '0' && curr <= '8') {
+          i += parseInt(curr)
+        }
+        break
+      }
+    }
+    j += 1
   }
-
-  squares[0] = new Rook('black')
-  squares[1] = new Knight('black')
-  squares[2] = new Bishop('black')
-  squares[3] = new Queen('black')
-  squares[4] = new King('black')
-  squares[5] = new Bishop('black')
-  squares[6] = new Knight('black')
-  squares[7] = new Rook('black')
-
-  squares[56] = new Rook('white')
-  squares[57] = new Knight('white')
-  squares[58] = new Bishop('white')
-  squares[59] = new Queen('white')
-  squares[60] = new King('white')
-  squares[61] = new Bishop('white')
-  squares[62] = new Knight('white')
-  squares[63] = new Rook('white')
 
   return squares
 }
@@ -63,7 +88,7 @@ function Board(): JSX.Element {
   const classes = useStyles()
   const board = []
 
-  const squares = initializePosition('')
+  const squares = initializePosition(e4c5Nf3)
 
   for (let i = 0; i < 8; i++) {
     const squareRows = []
