@@ -4,8 +4,8 @@ import Piece from './pieces/Piece'
 const useStyles = makeStyles((theme) => ({
   square: {
     backgroundColor: '#DDA15E',
-    height: '12em',
-    width: '12em',
+    height: '8em',
+    width: '8em',
     border: '.1em solid transparent',
     borderRadius: 0,
     margin: '-1px',
@@ -21,9 +21,10 @@ const useStyles = makeStyles((theme) => ({
 interface squareProps {
   isLight: boolean
   piece?: Piece
+  onClick: React.MouseEventHandler<HTMLButtonElement>
 }
 
-function Square({ isLight, piece }: squareProps): JSX.Element {
+function Square({ isLight, piece, onClick }: squareProps): JSX.Element {
   const classes = useStyles()
   const squareColor = isLight ? '#DDA15E' : '#BC6C25'
   const iconUrl = piece ? piece.iconUrl : ''
@@ -36,6 +37,7 @@ function Square({ isLight, piece }: squareProps): JSX.Element {
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
       }}
+      onClick={onClick}
     />
   )
 }

@@ -11,4 +11,11 @@ export default class Piece {
     this.player = player
     this.iconUrl = "url('" + icon + "')"
   }
+
+  isMovePossible(src: number, dest: number, isDestEnemyOccupied: boolean) {
+    return false
+  }
+  getSrcToDestPath(src: number, dest: number) {
+    return [0]
+  }
 }
