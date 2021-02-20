@@ -30,11 +30,19 @@ function isEven(num: number): boolean {
 function renderSquare(
   squares: Array<Piece | undefined>,
   isLight: boolean,
+  sourceSelection: number,
   position: number,
+  player: string,
   onClick: React.MouseEventHandler<HTMLButtonElement>,
 ): JSX.Element {
   return (
-    <Square isLight={isLight} piece={squares[position]} onClick={onClick} />
+    <Square
+      isLight={isLight}
+      isSelected={sourceSelection === position}
+      piece={squares[position]}
+      currPlayer={player}
+      onClick={onClick}
+    />
   )
 }
 
@@ -151,11 +159,13 @@ function Board(): JSX.Element {
     console.log(i)
     console.log(squares[i])
 
+    // No piece currently selected
     if (state.sourceSelection === -1) {
       if (squares[i] === undefined || squares[i]?.player !== state.player) {
         setState({
           ...state,
-          status: 'Wrong selection. Choose player ' + state.player + ' pieces.',
+          status:
+            'Invalid selection. Choose player ' + state.player + ' pieces.',
         })
       } else {
         setState({
@@ -168,8 +178,8 @@ function Board(): JSX.Element {
       if (squares[i] !== undefined && squares[i]?.player === state.player) {
         setState({
           ...state,
-          status: 'Wrong selection. Choose valid source and destination again.',
-          sourceSelection: -1,
+          status: 'Choose destination for the selected piece',
+          sourceSelection: i,
         })
       } else {
         const isDestEnemyOccupied = squares[i] ? true : false
@@ -227,8 +237,13 @@ function Board(): JSX.Element {
         (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j)) ? true : false
       const coord = i * 8 + j
       squareRows.push(
-        renderSquare(state.squares, squareIsLight, coord, () =>
-          handleClick(coord),
+        renderSquare(
+          state.squares,
+          squareIsLight,
+          state.sourceSelection,
+          coord,
+          state.player,
+          () => handleClick(coord),
         ),
       )
     }
