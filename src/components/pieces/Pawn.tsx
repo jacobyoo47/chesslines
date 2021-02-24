@@ -9,6 +9,7 @@ export default class Pawn extends Piece {
     const pieceProps = {
       player: player,
       icon: player === 'white' ? wPawn : bPawn,
+      name: player === 'white' ? 'P' : 'p',
     }
     super(pieceProps)
   }

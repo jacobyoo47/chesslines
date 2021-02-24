@@ -6,6 +6,7 @@ export default class Knight extends Piece {
     const pieceProps = {
       player: player,
       icon: player === 'white' ? wKnight : bKnight,
+      name: player === 'white' ? 'N' : 'n',
     }
     super(pieceProps)
   }

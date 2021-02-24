@@ -6,6 +6,7 @@ export default class King extends Piece {
     const pieceProps = {
       player: player,
       icon: player === 'white' ? wKing : bKing,
+      name: player === 'white' ? 'K' : 'k',
     }
     super(pieceProps)
   }

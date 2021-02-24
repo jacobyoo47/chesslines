@@ -30,6 +30,7 @@ function isEven(num: number): boolean {
 function renderSquare(
   squares: Array<Piece | undefined>,
   isLight: boolean,
+  isChecked: boolean,
   sourceSelection: number,
   position: number,
   player: string,
@@ -39,6 +40,7 @@ function renderSquare(
     <Square
       isLight={isLight}
       isSelected={sourceSelection === position}
+      isChecked={isChecked}
       piece={squares[position]}
       currPlayer={player}
       onClick={onClick}
@@ -50,6 +52,7 @@ const initializePosition = (
   fen: string,
   state: {
     squares: (Piece | undefined)[]
+    kingPos: Array<number>
     player: string
     sourceSelection: number
     status: string
@@ -57,6 +60,7 @@ const initializePosition = (
   setState: React.Dispatch<
     React.SetStateAction<{
       squares: (Piece | undefined)[]
+      kingPos: Array<number>
       player: string
       sourceSelection: number
       status: string
@@ -68,6 +72,8 @@ const initializePosition = (
   const fenList = fen.split(' ')
   const position = fenList[0].split('')
   const reUpper = /[A-Z]/
+  let wKing = 0
+  let bKing = 0
 
   let i = 0
   let j = 0
@@ -92,6 +98,11 @@ const initializePosition = (
       }
       case 'k': {
         squares[i] = new King(player)
+        if (player === 'white') {
+          wKing = i
+        } else {
+          bKing = i
+        }
         i += 1
         break
       }
@@ -115,7 +126,7 @@ const initializePosition = (
     j += 1
   }
 
-  setState({ ...state, squares: squares })
+  setState({ ...state, squares: squares, kingPos: [wKing, bKing] })
   return squares
 }
 
@@ -125,6 +136,7 @@ function Board(): JSX.Element {
 
   const [state, setState] = React.useState({
     squares: new Array<Piece | undefined>(),
+    kingPos: [0, 0],
     player: 'white',
     sourceSelection: -1,
     status: 'default',
@@ -149,6 +161,27 @@ function Board(): JSX.Element {
     return isLegal
   }
 
+  const isCheck = (squares: Array<Piece | undefined>) => {
+    let res = false
+    squares.forEach((p, i) => {
+      if (p && p.player !== state.player) {
+        const kingPos =
+          state.player === 'white' ? state.kingPos[0] : state.kingPos[1]
+        if (
+          p.isMovePossible(i, kingPos, true) &&
+          isMoveLegal(p.getSrcToDestPath(i, kingPos))
+        ) {
+          console.log('found')
+          console.log(i)
+          console.log(kingPos)
+          console.log(p.getSrcToDestPath(i, kingPos))
+          res = true
+        }
+      }
+    })
+    return res
+  }
+
   /**
    * Handles click-to-move
    * @param i
@@ -156,8 +189,8 @@ function Board(): JSX.Element {
   const handleClick = (i: number) => {
     //console.log(state)
     const squares = state.squares.slice()
-    console.log(i)
-    console.log(squares[i])
+    // console.log(i)
+    console.log(isCheck(squares))
 
     // No piece currently selected
     if (state.sourceSelection === -1) {
@@ -184,7 +217,7 @@ function Board(): JSX.Element {
       } else {
         const isDestEnemyOccupied = squares[i] ? true : false
         const currPiece = squares[state.sourceSelection]
-        // Should never be undefined, since sourceSelection is a valid piece
+        // currPiece should never be undefined, since sourceSelection is a valid piece
         const isMovePossible = currPiece?.isMovePossible(
           state.sourceSelection,
           i,
@@ -207,7 +240,16 @@ function Board(): JSX.Element {
           //   blackFallenSoldiers.push(squares[i])
           // }
 
+          // Move piece
           squares[i] = squares[state.sourceSelection]
+
+          let newKingPos = state.kingPos
+          if (squares[state.sourceSelection]?.name === 'K') {
+            newKingPos[0] = i
+          } else if (squares[state.sourceSelection]?.name === 'k') {
+            newKingPos[1] = i
+          }
+
           squares[state.sourceSelection] = undefined
           let player = state.player === 'white' ? 'black' : 'white'
           setState({
@@ -215,6 +257,7 @@ function Board(): JSX.Element {
             squares: squares,
             player: player,
             status: '',
+            kingPos: newKingPos,
           })
         } else {
           setState({
@@ -228,6 +271,9 @@ function Board(): JSX.Element {
     }
   }
 
+  // Check if king is in check
+  const kingChecked = isCheck(state.squares)
+
   // Render 8x8 board
   for (let i = 0; i < 8; i++) {
     const squareRows = []
@@ -236,10 +282,14 @@ function Board(): JSX.Element {
       const squareIsLight =
         (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j)) ? true : false
       const coord = i * 8 + j
+      const currKing =
+        state.player === 'white' ? state.kingPos[0] : state.kingPos[1]
+      const checkSquare = coord == currKing && kingChecked
       squareRows.push(
         renderSquare(
           state.squares,
           squareIsLight,
+          checkSquare,
           state.sourceSelection,
           coord,
           state.player,

@@ -6,6 +6,7 @@ export default class Bishop extends Piece {
     const pieceProps = {
       player: player,
       icon: player === 'white' ? wBishop : bBishop,
+      name: player === 'white' ? 'B' : 'b'
     }
     super(pieceProps)
   }

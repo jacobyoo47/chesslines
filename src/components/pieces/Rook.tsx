@@ -6,6 +6,7 @@ export default class Rook extends Piece {
     const pieceProps = {
       player: player,
       icon: player === 'white' ? wRook : bRook,
+      name: player === 'white' ? 'R' : 'r',
     }
     super(pieceProps)
   }
