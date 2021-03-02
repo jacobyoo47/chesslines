@@ -151,35 +151,60 @@ function Board(): JSX.Element {
    * @param  {[number]}  srcToDestPath [array of board indices comprising path between src and dest ]
    * @return {Boolean}
    */
-  const isMoveLegal = (srcToDestPath: number[]) => {
-    let isLegal = true
+  const isMoveClear = (
+    squares: Array<Piece | undefined>,
+    srcToDestPath: number[],
+  ) => {
+    // Check for pieces blocking path
     for (let i = 0; i < srcToDestPath.length; i++) {
-      if (state.squares[srcToDestPath[i]] !== undefined) {
-        isLegal = false
+      if (squares[srcToDestPath[i]] !== undefined) {
+        return false
       }
     }
-    return isLegal
+    return true
   }
 
-  const isCheck = (squares: Array<Piece | undefined>) => {
+  const isCheck = (squares: Array<Piece | undefined>, kingPos: number) => {
     let res = false
     squares.forEach((p, i) => {
       if (p && p.player !== state.player) {
-        const kingPos =
-          state.player === 'white' ? state.kingPos[0] : state.kingPos[1]
         if (
           p.isMovePossible(i, kingPos, true) &&
-          isMoveLegal(p.getSrcToDestPath(i, kingPos))
+          isMoveClear(squares, p.getSrcToDestPath(i, kingPos))
         ) {
           console.log('found')
-          console.log(i)
-          console.log(kingPos)
           console.log(p.getSrcToDestPath(i, kingPos))
           res = true
         }
       }
     })
     return res
+  }
+
+  /**
+   * Check that move is not blocked (isMoveClear) and does not put own king in check.
+   */
+  const isMoveLegal = (srcToDestPath: number[], dest: number) => {
+    let isLegal = isMoveClear(state.squares, srcToDestPath)
+
+    // Check for checks -- simulate move
+    const checkSquares = state.squares.slice()
+    // Temporarily change state.kingPos if we're moving the king
+    let tempKingPos
+    if (checkSquares[state.sourceSelection]?.name.toLowerCase() === 'k') {
+      tempKingPos = dest
+    } else {
+      tempKingPos =
+        state.player === 'white' ? state.kingPos[0] : state.kingPos[1]
+    }
+    checkSquares[dest] = checkSquares[state.sourceSelection]
+    checkSquares[state.sourceSelection] = undefined
+
+    if (isCheck(checkSquares, tempKingPos)) {
+      console.log('cant move due to check')
+      isLegal = false
+    }
+    return isLegal
   }
 
   /**
@@ -190,7 +215,6 @@ function Board(): JSX.Element {
     //console.log(state)
     const squares = state.squares.slice()
     // console.log(i)
-    console.log(isCheck(squares))
 
     // No piece currently selected
     if (state.sourceSelection === -1) {
@@ -232,7 +256,7 @@ function Board(): JSX.Element {
         if (
           srcToDestPath !== undefined &&
           isMovePossible &&
-          isMoveLegal(srcToDestPath)
+          isMoveLegal(srcToDestPath, i)
         ) {
           // if (squares[i]?.player === 'white') {
           //   whiteFallenSoldiers.push(squares[i])
@@ -243,6 +267,7 @@ function Board(): JSX.Element {
           // Move piece
           squares[i] = squares[state.sourceSelection]
 
+          // Update king position
           let newKingPos = state.kingPos
           if (squares[state.sourceSelection]?.name === 'K') {
             newKingPos[0] = i
@@ -272,7 +297,10 @@ function Board(): JSX.Element {
   }
 
   // Check if king is in check
-  const kingChecked = isCheck(state.squares)
+  const kingChecked = isCheck(
+    state.squares,
+    state.player === 'white' ? state.kingPos[0] : state.kingPos[1],
+  )
 
   // Render 8x8 board
   for (let i = 0; i < 8; i++) {
@@ -284,7 +312,7 @@ function Board(): JSX.Element {
       const coord = i * 8 + j
       const currKing =
         state.player === 'white' ? state.kingPos[0] : state.kingPos[1]
-      const checkSquare = coord == currKing && kingChecked
+      const checkSquare = coord === currKing && kingChecked // highlight checked king square red
       squareRows.push(
         renderSquare(
           state.squares,

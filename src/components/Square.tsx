@@ -29,7 +29,7 @@ function Square({
     } else if (isSelected) {
       return '#4A6252'
     } else if (isChecked) {
-      return '#7f363b'
+      return '#C61236'
     }
   }
 
