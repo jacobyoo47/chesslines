@@ -190,6 +190,35 @@ function Board(): JSX.Element {
     return res
   }
 
+  const inRange = (x: number, y: number, i: number) => {
+    return i >= x && i <= y
+  }
+
+  const isEnPassant = (piece: Piece | undefined, pos: number, dest: number) => {
+    if (piece?.name.toLowerCase() !== 'p') {
+      return false
+    }
+    const p = state.player === 'white' ? 1 : -1
+    const enemyPawn = state.squares[dest + 8 * p]
+    const enemyColor = state.player === 'white' ? 'p' : 'P'
+    const pJump = state.player === 'white' ? 0 : 40
+    console.log(inRange(8 + pJump, 15 + pJump, state.lastMove[0]))
+    console.log(state.lastMove[0] === state.lastMove[1] - 16 * p)
+    const enemyJumped =
+      inRange(8 + pJump, 15 + pJump, state.lastMove[0]) &&
+      state.lastMove[0] === state.lastMove[1] - 16 * p
+
+    if (
+      (dest === pos - 9 * p || dest === pos - 7 * p) &&
+      enemyPawn?.name === enemyColor &&
+      enemyJumped
+    ) {
+      return true
+    }
+
+    return false
+  }
+
   /**
    * Check that move is not blocked (isMoveClear) and does not put own king in check.
    */
@@ -262,10 +291,11 @@ function Board(): JSX.Element {
           state.sourceSelection,
           i,
         )
+        const enPassant = isEnPassant(currPiece, state.sourceSelection, i)
 
         if (
           srcToDestPath !== undefined &&
-          isMovePossible &&
+          (isMovePossible || enPassant) &&
           isMoveLegal(srcToDestPath, i)
         ) {
           // if (squares[i]?.player === 'white') {
@@ -273,9 +303,16 @@ function Board(): JSX.Element {
           // } else {
           //   blackFallenSoldiers.push(squares[i])
           // }
+          const newPlayer = state.player === 'white' ? 'black' : 'white'
 
           // Move piece
           squares[i] = squares[state.sourceSelection]
+
+          // Remove captured pawn in case of en passant
+          if (enPassant) {
+            const modifier = state.player === 'white' ? 1 : -1
+            squares[i + 8 * modifier] = undefined
+          }
 
           // Update king position
           let newKingPos = state.kingPos
@@ -286,14 +323,13 @@ function Board(): JSX.Element {
           }
 
           squares[state.sourceSelection] = undefined
-          let player = state.player === 'white' ? 'black' : 'white'
           setState({
             sourceSelection: -1,
             squares: squares,
-            player: player,
+            player: newPlayer,
             status: '',
             kingPos: newKingPos,
-            lastMove: [state.sourceSelection, i]
+            lastMove: [state.sourceSelection, i],
           })
         } else {
           setState({

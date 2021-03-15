@@ -17,14 +17,17 @@ export default class Pawn extends Piece {
   isMovePossible(src: number, dest: number, isDestEnemyOccupied: boolean) {
     const p = this.player === 'white' ? 1 : -1
     const pawnInitial = this.player === 'white' ? wPawnInitial : bPawnInitial
-    if (
-      (dest === src - (8 * p) && !isDestEnemyOccupied) ||
-      (dest === src - (16 * p) && pawnInitial.includes(src) && !isDestEnemyOccupied)
+    if (dest === src - 8 * p && !isDestEnemyOccupied) {
+      return true
+    } else if (
+      dest === src - 16 * p &&
+      pawnInitial.includes(src) &&
+      !isDestEnemyOccupied
     ) {
       return true
     } else if (
       isDestEnemyOccupied &&
-      (dest === src - (9 * p) || dest === src - (7 * p))
+      (dest === src - 9 * p || dest === src - 7 * p)
     ) {
       return true
     }
