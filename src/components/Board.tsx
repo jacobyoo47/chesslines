@@ -28,9 +28,10 @@ function isEven(num: number): boolean {
 }
 
 function renderSquare(
-  squares: Array<Piece | undefined>,
+  piece: Piece | undefined,
   isLight: boolean,
   isChecked: boolean,
+  isLastMove: boolean,
   sourceSelection: number,
   position: number,
   player: string,
@@ -41,8 +42,10 @@ function renderSquare(
       isLight={isLight}
       isSelected={sourceSelection === position}
       isChecked={isChecked}
-      piece={squares[position]}
+      isLastMove={isLastMove}
+      piece={piece}
       currPlayer={player}
+      coord={position}
       onClick={onClick}
     />
   )
@@ -56,6 +59,7 @@ const initializePosition = (
     player: string
     sourceSelection: number
     status: string
+    lastMove: Array<number>
   },
   setState: React.Dispatch<
     React.SetStateAction<{
@@ -64,6 +68,7 @@ const initializePosition = (
       player: string
       sourceSelection: number
       status: string
+      lastMove: Array<number>
     }>
   >,
 ): Array<Piece | undefined> => {
@@ -130,6 +135,9 @@ const initializePosition = (
   return squares
 }
 
+/**
+ * Renders the chessboard and handles the legal move logic.
+ */
 function Board(): JSX.Element {
   const classes = useStyles()
   const board = []
@@ -140,6 +148,7 @@ function Board(): JSX.Element {
     player: 'white',
     sourceSelection: -1,
     status: 'default',
+    lastMove: new Array<number>(),
   })
 
   React.useEffect(() => {
@@ -216,8 +225,8 @@ function Board(): JSX.Element {
     const squares = state.squares.slice()
     // console.log(i)
 
-    // No piece currently selected
     if (state.sourceSelection === -1) {
+      // No piece currently selected
       if (squares[i] === undefined || squares[i]?.player !== state.player) {
         setState({
           ...state,
@@ -232,6 +241,7 @@ function Board(): JSX.Element {
         })
       }
     } else if (state.sourceSelection > -1) {
+      // Piece selected
       if (squares[i] !== undefined && squares[i]?.player === state.player) {
         setState({
           ...state,
@@ -283,6 +293,7 @@ function Board(): JSX.Element {
             player: player,
             status: '',
             kingPos: newKingPos,
+            lastMove: [state.sourceSelection, i]
           })
         } else {
           setState({
@@ -313,11 +324,13 @@ function Board(): JSX.Element {
       const currKing =
         state.player === 'white' ? state.kingPos[0] : state.kingPos[1]
       const checkSquare = coord === currKing && kingChecked // highlight checked king square red
+      const isLastMoveSquare = state.lastMove.includes(coord)
       squareRows.push(
         renderSquare(
-          state.squares,
+          state.squares[coord],
           squareIsLight,
           checkSquare,
+          isLastMoveSquare,
           state.sourceSelection,
           coord,
           state.player,
