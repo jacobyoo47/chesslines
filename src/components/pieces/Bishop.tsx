@@ -1,4 +1,5 @@
 import Piece from './Piece'
+import convertXY from '../../helpers/pieceHelpers'
 import { wBishop, bBishop } from '../../static/pieceIcons'
 
 export default class Bishop extends Piece {
@@ -12,7 +13,11 @@ export default class Bishop extends Piece {
   }
 
   isMovePossible(src: number, dest: number) {
-    return Math.abs(src - dest) % 9 === 0 || Math.abs(src - dest) % 7 === 0
+    const srcCoord = convertXY(src)
+    const destCoord = convertXY(dest)
+    const diffX = Math.abs(srcCoord[0] - destCoord[0])
+    const diffY = Math.abs(srcCoord[1] - destCoord[1])
+    return diffX === diffY
   }
 
   getSrcToDestPath(src: number, dest: number) {

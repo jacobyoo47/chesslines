@@ -1,4 +1,5 @@
 import Piece from './Piece'
+import convertXY from '../../helpers/pieceHelpers'
 import { wQueen, bQueen } from '../../static/pieceIcons'
 
 export default class Queen extends Piece {
@@ -15,9 +16,13 @@ export default class Queen extends Piece {
     let mod = src % 8
     let diff = 8 - mod
 
+    const srcCoord = convertXY(src)
+    const destCoord = convertXY(dest)
+    const diffX = Math.abs(srcCoord[0] - destCoord[0])
+    const diffY = Math.abs(srcCoord[1] - destCoord[1])
+
     return (
-      Math.abs(src - dest) % 9 === 0 ||
-      Math.abs(src - dest) % 7 === 0 ||
+      diffX == diffY ||
       Math.abs(src - dest) % 8 === 0 ||
       (dest >= src - mod && dest < src + diff)
     )

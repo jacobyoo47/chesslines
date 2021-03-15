@@ -202,8 +202,6 @@ function Board(): JSX.Element {
     const enemyPawn = state.squares[dest + 8 * p]
     const enemyColor = state.player === 'white' ? 'p' : 'P'
     const pJump = state.player === 'white' ? 0 : 40
-    console.log(inRange(8 + pJump, 15 + pJump, state.lastMove[0]))
-    console.log(state.lastMove[0] === state.lastMove[1] - 16 * p)
     const enemyJumped =
       inRange(8 + pJump, 15 + pJump, state.lastMove[0]) &&
       state.lastMove[0] === state.lastMove[1] - 16 * p
