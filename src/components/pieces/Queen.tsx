@@ -22,7 +22,7 @@ export default class Queen extends Piece {
     const diffY = Math.abs(srcCoord[1] - destCoord[1])
 
     return (
-      diffX == diffY ||
+      diffX === diffY ||
       Math.abs(src - dest) % 8 === 0 ||
       (dest >= src - mod && dest < src + diff)
     )

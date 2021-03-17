@@ -60,6 +60,7 @@ const initializePosition = (
     sourceSelection: number
     status: string
     lastMove: Array<number>
+    castling: Array<boolean>
   },
   setState: React.Dispatch<
     React.SetStateAction<{
@@ -69,6 +70,7 @@ const initializePosition = (
       sourceSelection: number
       status: string
       lastMove: Array<number>
+      castling: Array<boolean>
     }>
   >,
 ): Array<Piece | undefined> => {
@@ -142,6 +144,16 @@ function Board(): JSX.Element {
   const classes = useStyles()
   const board = []
 
+  /**
+   * squares - 1D array of pieces that represents board
+   * kingPos - [whiteKingPos, blackKingPos]
+   * player - current player's turn
+   * sourceSelection - pos of currently selected square
+   * status - flavor text
+   * lastMove - 1D array that shows last move played [sourcePos, destPos]
+   * castling - [whiteLong, whiteShort, blackLong, blackShort]
+   */
+
   const [state, setState] = React.useState({
     squares: new Array<Piece | undefined>(),
     kingPos: [0, 0],
@@ -149,6 +161,7 @@ function Board(): JSX.Element {
     sourceSelection: -1,
     status: 'default',
     lastMove: new Array<number>(),
+    castling: new Array<boolean>(),
   })
 
   React.useEffect(() => {
@@ -218,14 +231,26 @@ function Board(): JSX.Element {
   }
 
   /**
-   * Check that move is not blocked (isMoveClear) and does not put own king in check.
+   * Check if the move being played is castles
    */
-  const isMoveLegal = (srcToDestPath: number[], dest: number) => {
-    let isLegal = isMoveClear(state.squares, srcToDestPath)
+  const isCastles = (piece: Piece | undefined, dest: number) => {
+    if (piece?.name.toLowerCase() !== 'k') {
+      return false
+    }
 
+    const castleShort =
+      state.player === 'white' ? state.castling[1] : state.castling[3]
+
+    if (castleShort && dest === 62) {
+      return true
+    }
+    return false
+  }
+
+  const isKingInCheck = (dest: number) => {
     // Check for checks -- simulate move
     const checkSquares = state.squares.slice()
-    // Temporarily change state.kingPos if we're moving the king
+    // Get new kingPos if we're moving the king
     let tempKingPos
     if (checkSquares[state.sourceSelection]?.name.toLowerCase() === 'k') {
       tempKingPos = dest
@@ -238,9 +263,43 @@ function Board(): JSX.Element {
 
     if (isCheck(checkSquares, tempKingPos)) {
       console.log('cant move due to check')
-      isLegal = false
+      return true
     }
-    return isLegal
+
+    return false
+  }
+
+  /**
+   * Check that move is not blocked (isMoveClear) and does not put own king in check.
+   */
+  const isMoveLegal = (
+    srcToDestPath: number[],
+    dest: number,
+    castles: boolean,
+  ) => {
+    if (!isMoveClear(state.squares, srcToDestPath)) {
+      return false
+    }
+
+    if (castles) {
+      const currKingPos =
+        state.player === 'white' ? state.kingPos[0] : state.kingPos[1]
+
+      // Check that king is not currently in check
+      if (isCheck(state.squares, currKingPos)) {
+        return false
+      }
+
+      // Check that there are no checks blocking castles
+      for (let i = state.sourceSelection; i < dest; i += 1) {
+        if (isKingInCheck(i)) {
+          return false
+        }
+      }
+    }
+
+    // Check that move does not put king in check
+    return !isKingInCheck(dest)
   }
 
   /**
@@ -285,16 +344,17 @@ function Board(): JSX.Element {
           isDestEnemyOccupied,
         )
 
-        const srcToDestPath = squares[state.sourceSelection]?.getSrcToDestPath(
+        const srcToDestPath = currPiece?.getSrcToDestPath(
           state.sourceSelection,
           i,
         )
         const enPassant = isEnPassant(currPiece, state.sourceSelection, i)
+        const castles = isCastles(currPiece, i)
 
         if (
           srcToDestPath !== undefined &&
-          (isMovePossible || enPassant) &&
-          isMoveLegal(srcToDestPath, i)
+          (isMovePossible || enPassant || castles) &&
+          isMoveLegal(srcToDestPath, i, castles)
         ) {
           // if (squares[i]?.player === 'white') {
           //   whiteFallenSoldiers.push(squares[i])
@@ -310,6 +370,12 @@ function Board(): JSX.Element {
           if (enPassant) {
             const modifier = state.player === 'white' ? 1 : -1
             squares[i + 8 * modifier] = undefined
+          }
+
+          // Move rook in case of castles
+          if (castles) {
+            squares[61] = squares[63]
+            squares[63] = undefined
           }
 
           // Update king position
@@ -328,6 +394,7 @@ function Board(): JSX.Element {
             status: '',
             kingPos: newKingPos,
             lastMove: [state.sourceSelection, i],
+            castling: [true, true, true, true],
           })
         } else {
           setState({

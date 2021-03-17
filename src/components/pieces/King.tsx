@@ -24,8 +24,21 @@ export default class King extends Piece {
     )
   }
 
-  // Path is always empty since King moves by only one square
+  // Path is always empty EXCEPT when castling
   getSrcToDestPath(src: number, dest: number) {
-    return []
+    const diff = Math.abs(src - dest)
+    const increment = src > dest ? -1 : 1
+    if (diff === 2) {
+      const path = []
+      let start = src + increment
+      while (start !== dest) {
+        path.push(start)
+        start += increment
+      }
+      console.log(path)
+      return path
+    } else {
+      return []
+    }
   }
 }
