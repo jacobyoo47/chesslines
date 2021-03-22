@@ -35,7 +35,6 @@ export default class King extends Piece {
         path.push(start)
         start += increment
       }
-      console.log(path)
       return path
     } else {
       return []

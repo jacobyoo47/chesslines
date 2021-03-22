@@ -9,6 +9,7 @@ import Bishop from './pieces/Bishop'
 import Knight from './pieces/Knight'
 import Rook from './pieces/Rook'
 import Pawn from './pieces/Pawn'
+import { start } from 'repl'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -161,7 +162,7 @@ function Board(): JSX.Element {
     sourceSelection: -1,
     status: 'default',
     lastMove: new Array<number>(),
-    castling: new Array<boolean>(),
+    castling: [true, true, true, true],
   })
 
   React.useEffect(() => {
@@ -238,12 +239,21 @@ function Board(): JSX.Element {
       return false
     }
 
-    const castleShort =
-      state.player === 'white' ? state.castling[1] : state.castling[3]
+    const isWhite = state.player === 'white'
 
-    if (castleShort && dest === 62) {
-      return true
+    const castleShort = isWhite ? state.castling[1] : state.castling[3]
+    const castleLong = isWhite ? state.castling[0] : state.castling[2]
+
+    if (isWhite) {
+      if ((castleShort && dest === 62) || (castleLong && dest === 58)) {
+        return true
+      }
+    } else {
+      if ((castleShort && dest === 6) || (castleLong && dest === 2)) {
+        return true
+      }
     }
+
     return false
   }
 
@@ -291,9 +301,19 @@ function Board(): JSX.Element {
       }
 
       // Check that there are no checks blocking castles
-      for (let i = state.sourceSelection; i < dest; i += 1) {
-        if (isKingInCheck(i)) {
-          return false
+      const castleDirection = dest === 2 || dest === 58
+      const pathEnd = castleDirection ? dest - 1 : dest
+      if (castleDirection) {
+        for (let i = state.sourceSelection; i > pathEnd; i -= 1) {
+          if (isKingInCheck(i)) {
+            return false
+          }
+        }
+      } else {
+        for (let i = state.sourceSelection; i < pathEnd; i += 1) {
+          if (isKingInCheck(i)) {
+            return false
+          }
         }
       }
     }
@@ -361,6 +381,7 @@ function Board(): JSX.Element {
           // } else {
           //   blackFallenSoldiers.push(squares[i])
           // }
+          const newCastling = state.castling.slice()
           const newPlayer = state.player === 'white' ? 'black' : 'white'
 
           // Move piece
@@ -374,8 +395,72 @@ function Board(): JSX.Element {
 
           // Move rook in case of castles
           if (castles) {
-            squares[61] = squares[63]
-            squares[63] = undefined
+            if (state.player === 'white' && i === 62) {
+              // White castles short
+              squares[61] = squares[63]
+              squares[63] = undefined
+              newCastling[0] = false
+              newCastling[1] = false
+            } else if (state.player === 'white' && i === 58) {
+              // White castles long
+              squares[59] = squares[56]
+              squares[56] = undefined
+              newCastling[0] = false
+              newCastling[1] = false
+            } else if (state.player === 'black' && i === 6) {
+              // Black castles short
+              squares[5] = squares[7]
+              squares[7] = undefined
+              newCastling[2] = false
+              newCastling[3] = false
+            } else if (state.player === 'black' && i === 2) {
+              // Black castles long
+              squares[3] = squares[0]
+              squares[0] = undefined
+              newCastling[2] = false
+              newCastling[3] = false
+            }
+          } else if (currPiece?.name.toLowerCase() === 'r' || currPiece?.name.toLowerCase() === 'k') {
+            // Edit castling state if rook or king is moved
+            if (
+              currPiece?.name === 'r' &&
+              state.castling[3] &&
+              state.sourceSelection === 7
+            ) {
+              newCastling[3] = false
+            } else if (
+              currPiece?.name === 'r' &&
+              state.castling[2] &&
+              state.sourceSelection === 0
+            ) {
+              newCastling[2] = false
+            } else if (
+              currPiece?.name === 'R' &&
+              state.castling[1] &&
+              state.sourceSelection === 63
+            ) {
+              newCastling[1] = false
+            } else if (
+              currPiece?.name === 'R' &&
+              state.castling[0] &&
+              state.sourceSelection === 56
+            ) {
+              newCastling[0] = false
+            } else if (
+              currPiece?.name === 'k' &&
+              (state.castling[2] || state.castling[3]) &&
+              state.sourceSelection === 4
+            ) {
+              newCastling[2] = false
+              newCastling[3] = false
+            } else if (
+              currPiece?.name === 'K' &&
+              (state.castling[0] || state.castling[1]) &&
+              state.sourceSelection === 60
+            ) {
+              newCastling[0] = false
+              newCastling[1] = false
+            }
           }
 
           // Update king position
@@ -385,7 +470,7 @@ function Board(): JSX.Element {
           } else if (squares[state.sourceSelection]?.name === 'k') {
             newKingPos[1] = i
           }
-
+          console.log(newCastling)
           squares[state.sourceSelection] = undefined
           setState({
             sourceSelection: -1,
@@ -394,7 +479,7 @@ function Board(): JSX.Element {
             status: '',
             kingPos: newKingPos,
             lastMove: [state.sourceSelection, i],
-            castling: [true, true, true, true],
+            castling: newCastling,
           })
         } else {
           setState({
