@@ -10,6 +10,11 @@ export const getFenPosition = (fen: string): Chess => {
   const squares = Array<Piece | undefined>(64).fill(undefined)
   const fenList = fen.split(' ')
   const position = fenList[0].split('')
+  const playerTurn = fenList[1]
+  const fenCastling = fenList[2]
+  const enPassant = fenList[3]
+  const halfMoves = fenList[4]
+  const fullMoves = fenList[5]
   const reUpper = /[A-Z]/
   let wKing = 0
   let bKing = 0
@@ -66,14 +71,27 @@ export const getFenPosition = (fen: string): Chess => {
     j += 1
   }
 
+  // Parse fen castling
+  const castling = [false, false, false, false]
+  if (fenCastling !== '-') {
+    for (let i = 0; i < fenCastling.length; i++) {
+      const curr = fenCastling[i]
+      if (curr === 'Q') castling[0] = true
+      if (curr === 'K') castling[1] = true
+      if (curr === 'q') castling[2] = true
+      if (curr === 'k') castling[3] = true
+    }
+  }
+
   return new Chess({
     squares: squares,
     kingPos: [wKing, bKing],
-    player: 'white',
+    player: playerTurn === 'w' ? 'white' : 'black',
     sourceSelection: -1,
     status: 'default',
     lastMove: new Array<number>(),
-    castling: [true, true, true, true],
+    castling: castling,
+    moveNo: parseInt(fullMoves)
   })
 }
 
@@ -85,6 +103,7 @@ interface chessProps {
   status: string
   lastMove: Array<number>
   castling: Array<boolean>
+  moveNo: number
 }
 
 /**
@@ -99,6 +118,7 @@ export default class Chess {
   status: string
   lastMove: Array<number>
   castling: Array<boolean>
+  moveNo: number
 
   constructor(state: chessProps) {
     this.squares = state.squares
@@ -108,6 +128,7 @@ export default class Chess {
     this.status = state.status
     this.lastMove = state.lastMove
     this.castling = state.castling
+    this.moveNo = state.moveNo
   }
 
   getSquares() {

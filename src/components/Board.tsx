@@ -180,6 +180,9 @@ function Board(): JSX.Element {
               kingPos: newKingPos,
               lastMove: [chessState.sourceSelection, i],
               castling: newCastling,
+              moveNo: !chessState.isWhiteTurn()
+                ? chessState.moveNo + 1
+                : chessState.moveNo,
             }),
           )
         } else {
