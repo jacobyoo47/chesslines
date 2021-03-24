@@ -140,11 +140,11 @@ function Board(): JSX.Element {
           (isMovePossible || enPassant || castles) &&
           chessState.isMoveLegal(srcToDestPath, i, castles)
         ) {
-          // if (squares[i]?.player === 'white') {
-          //   whiteFallenSoldiers.push(squares[i])
-          // } else {
-          //   blackFallenSoldiers.push(squares[i])
-          // }
+          // Update fallen pieces with captured piece
+          const fallenPieces = chessState.getFallenPieces()
+          if (squares[i]) fallenPieces.push(squares[i]!.name)
+
+
           const newPlayer = whiteTurn ? 'black' : 'white'
 
           // Move piece
@@ -162,6 +162,10 @@ function Board(): JSX.Element {
             currPiece,
             i,
           )
+          console.log(fallenPieces)
+
+          // TEMPORARY
+          const moveList = new Array<string>()
 
           // Update king position
           let newKingPos = chessState.kingPos
@@ -183,6 +187,8 @@ function Board(): JSX.Element {
               moveNo: !chessState.isWhiteTurn()
                 ? chessState.moveNo + 1
                 : chessState.moveNo,
+              moveList: moveList,
+              fallenPieces: fallenPieces,
             }),
           )
         } else {

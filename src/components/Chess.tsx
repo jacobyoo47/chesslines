@@ -91,7 +91,9 @@ export const getFenPosition = (fen: string): Chess => {
     status: 'default',
     lastMove: new Array<number>(),
     castling: castling,
-    moveNo: parseInt(fullMoves)
+    moveNo: parseInt(fullMoves),
+    moveList: new Array<string>(),
+    fallenPieces: new Array<string>()
   })
 }
 
@@ -104,6 +106,8 @@ interface chessProps {
   lastMove: Array<number>
   castling: Array<boolean>
   moveNo: number
+  moveList: Array<string>
+  fallenPieces: Array<string>
 }
 
 /**
@@ -119,6 +123,8 @@ export default class Chess {
   lastMove: Array<number>
   castling: Array<boolean>
   moveNo: number
+  moveList: Array<string>
+  fallenPieces: Array<string>
 
   constructor(state: chessProps) {
     this.squares = state.squares
@@ -129,6 +135,8 @@ export default class Chess {
     this.lastMove = state.lastMove
     this.castling = state.castling
     this.moveNo = state.moveNo
+    this.moveList = state.moveList
+    this.fallenPieces = state.fallenPieces
   }
 
   getSquares() {
@@ -137,6 +145,10 @@ export default class Chess {
 
   getCastling() {
     return this.castling.slice()
+  }
+
+  getFallenPieces() {
+    return this.fallenPieces.slice()
   }
 
   isWhiteTurn() {
