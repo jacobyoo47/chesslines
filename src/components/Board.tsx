@@ -144,28 +144,11 @@ function Board(): JSX.Element {
           const fallenPieces = chessState.getFallenPieces()
           if (squares[i]) fallenPieces.push(squares[i]!.name)
 
-
           const newPlayer = whiteTurn ? 'black' : 'white'
+          const captured = squares[i] !== undefined
 
           // Move piece
           squares[i] = squares[chessState.sourceSelection]
-
-          // Remove captured pawn in case of en passant
-          if (enPassant) {
-            const modifier = whiteTurn ? 1 : -1
-            squares[i + 8 * modifier] = undefined
-          }
-
-          const newCastling = chessState.handleCastles(
-            squares,
-            castles,
-            currPiece,
-            i,
-          )
-          console.log(fallenPieces)
-
-          // TEMPORARY
-          const moveList = new Array<string>()
 
           // Update king position
           let newKingPos = chessState.kingPos
@@ -175,6 +158,44 @@ function Board(): JSX.Element {
             newKingPos[1] = i
           }
           squares[chessState.sourceSelection] = undefined
+
+          // Remove captured pawn in case of en passant
+          if (enPassant) {
+            const modifier = whiteTurn ? 1 : -1
+            squares[i + 8 * modifier] = undefined
+          }
+
+          const newCastlingStatus = chessState.handleCastles(
+            squares,
+            castles,
+            currPiece,
+            i,
+          )
+
+          const checkedEnemyKing = chessState.isCheck(
+            squares,
+            chessState.isWhiteTurn()
+              ? chessState.kingPos[1]
+              : chessState.kingPos[0],
+            chessState.isWhiteTurn() ? 'black' : 'white',
+          )
+
+          // Update moveList
+          const moveList = chessState.getMoveList()
+          moveList.push(
+            chessState.getMoveName(
+              currPiece!.name,
+              captured,
+              newCastlingStatus.dir,
+              checkedEnemyKing,
+              chessState.sourceSelection,
+              i,
+            ),
+          )
+
+          console.log(fallenPieces)
+          console.log(moveList)
+
           setState(
             new Chess({
               sourceSelection: -1,
@@ -183,7 +204,7 @@ function Board(): JSX.Element {
               status: '',
               kingPos: newKingPos,
               lastMove: [chessState.sourceSelection, i],
-              castling: newCastling,
+              castling: newCastlingStatus.newCastling,
               moveNo: !chessState.isWhiteTurn()
                 ? chessState.moveNo + 1
                 : chessState.moveNo,
@@ -210,7 +231,11 @@ function Board(): JSX.Element {
     : chessState.kingPos[1]
 
   // Check if king is in check
-  const kingChecked = chessState.isCheck(chessState.squares, currKing)
+  const kingChecked = chessState.isCheck(
+    chessState.squares,
+    currKing,
+    chessState.player,
+  )
 
   // Render 8x8 board
   for (let i = 0; i < 8; i++) {
@@ -247,7 +272,7 @@ function Board(): JSX.Element {
       <h4 className={classes.turnText} style={{ color: chessState.player }}>
         {chessState.player} to move
       </h4>
-      {/* <h5 className={classes.turnText}>{chessState.status}</h5> */}
+      <h5 className={classes.turnText}>{chessState.moveList}</h5>
     </div>
   )
 }

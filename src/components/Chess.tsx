@@ -93,7 +93,7 @@ export const getFenPosition = (fen: string): Chess => {
     castling: castling,
     moveNo: parseInt(fullMoves),
     moveList: new Array<string>(),
-    fallenPieces: new Array<string>()
+    fallenPieces: new Array<string>(),
   })
 }
 
@@ -151,6 +151,51 @@ export default class Chess {
     return this.fallenPieces.slice()
   }
 
+  getMoveList() {
+    return this.moveList.slice()
+  }
+
+  getMoveName(
+    pieceName: string,
+    captured: boolean,
+    castled: string,
+    checked: boolean,
+    source: number,
+    dest: number,
+  ) {
+    if (castled !== '') {
+      if (castled === 'short') {
+        return '0-0'
+      } else {
+        return '0-0-0'
+      }
+    }
+
+    let res = ''
+
+    const srcRowName = (8 - Math.floor(source / 8)).toString()
+    const srcFileName = String.fromCharCode(97 + (source % 8))
+    const destRowName = (8 - Math.floor(dest / 8)).toString()
+    const destFileName = String.fromCharCode(97 + (dest % 8))
+
+    if (pieceName.toLowerCase() !== 'p') {
+      res += pieceName
+    } else if (captured) {
+      res += srcFileName
+    }
+
+    const destPos =
+      destFileName + destRowName
+
+    if (captured) res += 'x'
+
+    res += destPos
+
+    if (checked) res += '+'
+
+    return res
+  }
+
   isWhiteTurn() {
     return this.player === 'white'
   }
@@ -170,10 +215,10 @@ export default class Chess {
     return true
   }
 
-  isCheck(squares: Array<Piece | undefined>, kingPos: number) {
+  isCheck(squares: Array<Piece | undefined>, kingPos: number, player: string) {
     let res = false
     squares.forEach((p, i) => {
-      if (p && p.player !== this.player) {
+      if (p && p.player !== player) {
         if (
           p.isMovePossible(i, kingPos, true) &&
           this.isMoveClear(squares, p.getSrcToDestPath(i, kingPos))
@@ -253,7 +298,7 @@ export default class Chess {
     checkSquares[dest] = checkSquares[this.sourceSelection]
     checkSquares[this.sourceSelection] = undefined
 
-    if (this.isCheck(checkSquares, tempKingPos)) {
+    if (this.isCheck(checkSquares, tempKingPos, this.player)) {
       console.log('cant move due to check')
       return true
     }
@@ -273,7 +318,7 @@ export default class Chess {
       const currKingPos = this.isWhiteTurn() ? this.kingPos[0] : this.kingPos[1]
 
       // Check that king is not currently in check
-      if (this.isCheck(this.squares, currKingPos)) {
+      if (this.isCheck(this.squares, currKingPos, this.player)) {
         return false
       }
 
@@ -301,6 +346,7 @@ export default class Chess {
 
   /**
    * Handles castling state / rook movement
+   * Returns a tuple with the newCastling array and direction (if castles was played)
    */
   handleCastles(
     squares: Array<Piece | undefined>,
@@ -310,16 +356,19 @@ export default class Chess {
   ) {
     const whiteTurn = this.isWhiteTurn()
     const newCastling = this.getCastling()
+    let dir = ''
     if (castles) {
       if (whiteTurn) {
         if (dest === 62) {
           // White castles short
           squares[61] = squares[63]
           squares[63] = undefined
+          dir = 'short'
         } else if (dest === 58) {
           // White castles long
           squares[59] = squares[56]
           squares[56] = undefined
+          dir = 'long'
         }
 
         // Update castling
@@ -330,10 +379,12 @@ export default class Chess {
           // Black castles short
           squares[5] = squares[7]
           squares[7] = undefined
+          dir = 'short'
         } else if (dest === 2) {
           // Black castles long
           squares[3] = squares[0]
           squares[0] = undefined
+          dir = 'long'
         }
 
         // Update castling
@@ -372,6 +423,6 @@ export default class Chess {
         newCastling[3] = false
       }
     }
-    return newCastling
+    return {newCastling, dir}
   }
 }
