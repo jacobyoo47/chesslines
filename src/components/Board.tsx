@@ -7,7 +7,6 @@ import Piece from './pieces/Piece'
 const useStyles = makeStyles((theme) => ({
   root: {
     //backgroundColor: theme.palette.info.main,
-    display: 'flex',
     justifyContent: 'center',
   },
   turnText: {
@@ -99,11 +98,8 @@ function Board({chessState, squareClick}: boardProps): JSX.Element {
   return (
     <div>
       <div className={classes.root}>
-        <div>{board}</div>
+        {board}
       </div>
-      <h4 className={classes.turnText} style={{ color: chessState.player }}>
-        {chessState.player} to move
-      </h4>
     </div>
   )
 }

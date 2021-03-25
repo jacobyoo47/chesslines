@@ -3,41 +3,38 @@ import { Typography, Grid } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper'
 import Chess from './Chess'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      '& > *': {
-        marginLeft: theme.spacing(3),
-        marginTop: 0,
-        width: theme.spacing(64),
-        height: theme.spacing(100),
-      },
-    },
-    infoBar: {
-      background: theme.palette.info.light,
-    },
-    moveHeader: {
-      marginTop: theme.spacing(2),
-      marginLeft: theme.spacing(3),
-      color: theme.palette.secondary.main,
-      fontSize: '24px',
-      fontWeight: 'bold',
-    },
-    moveText: {
-      marginTop: theme.spacing(2),
-      marginLeft: theme.spacing(3),
-      color: theme.palette.primary.main,
-    },
-  }),
-)
-
 interface infobarProps {
   chessState: Chess
 }
 
 export default function Infobar({ chessState }: infobarProps): JSX.Element {
+  const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        '& > *': {
+          marginLeft: theme.spacing(3),
+          marginTop: 0,
+          width: '20vw',
+          height: '48vw',
+        },
+      },
+      infoBar: {
+        background: theme.palette.info.light,
+      },
+      turnText: {
+        marginTop: theme.spacing(2),
+        marginLeft: theme.spacing(3),
+        color: chessState.player,
+      },
+      moveText: {
+        marginTop: theme.spacing(2),
+        marginLeft: theme.spacing(3),
+        color: theme.palette.primary.main,
+      },
+    }),
+  )
   const classes = useStyles()
 
   // Create move list
@@ -63,7 +60,12 @@ export default function Infobar({ chessState }: infobarProps): JSX.Element {
           style={{
             display: 'flex',
           }}>
-          <Typography className={classes.moveHeader}>Moves: </Typography>
+          <Typography variant="h6" className={classes.turnText}>
+            {chessState.player} to move
+          </Typography>
+          <Typography variant="h5" className={classes.moveText}>
+            Moves:{' '}
+          </Typography>
           <Typography className={classes.moveText}>{moveListString}</Typography>
         </Grid>
       </Paper>

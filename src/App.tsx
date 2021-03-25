@@ -17,6 +17,7 @@ const chessTheme = createMuiTheme({
     info: {
       main: '#2D2D2A',
       light: '#353831',
+      dark: '#565650',
     },
   },
 })

@@ -54,8 +54,8 @@ function Square({
       backgroundImage: iconUrl,
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
-      height: '8em',
-      width: '8em',
+      height: '6vw',
+      width: '6vw',
       border: '.1em solid transparent',
       borderRadius: 0,
       padding: 1,
@@ -70,39 +70,43 @@ function Square({
         cursor: piece && currPlayer === piece.player ? 'pointer' : 'default',
       },
     },
+    textWrapper: {
+      width: '100%',
+      height: '100%',
+    },
     colText: {
       color: inverseSquareColor,
-      fontSize: 24,
+      fontSize: '1vw',
       position: 'relative',
-      left: '1.8em',
-      top: '1.6em',
+      left: '43%',
+      top: '104%',
       padding: 0,
       margin: 0,
     },
     rowText: {
       color: inverseSquareColor,
-      fontSize: 24,
+      fontSize: '1vw',
       position: 'relative',
-      right: '1.8em',
-      bottom: '1.6em',
+      right: '68%',
+      bottom: '0%',
       padding: 0,
       margin: 0,
     },
     cornerColText: {
       color: inverseSquareColor,
-      fontSize: 24,
+      fontSize: '1vw',
       position: 'relative',
-      left: '1.8em',
-      top: '1.0em',
+      left: '40%',
+      top: '84%',
       padding: 0,
       margin: 0,
     },
     cornerRowText: {
       color: inverseSquareColor,
-      fontSize: 24,
+      fontSize: '1vw',
       position: 'relative',
-      right: '1.8em',
-      bottom: '1.1em',
+      right: '68%',
+      bottom: '0%',
       padding: 0,
       margin: 0,
     },
@@ -131,7 +135,7 @@ function Square({
     }
 
     return (
-      <div>
+      <div className={classes.textWrapper}>
         <div className={rowClass}>{rowText}</div>
         <div className={colClass}>{colText}</div>
       </div>
