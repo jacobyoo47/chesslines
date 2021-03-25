@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.css'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
-import Board from './components/Board'
+import Game from './components/Game'
 
 // Main app theme
 const chessTheme = createMuiTheme({
@@ -25,7 +25,7 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={chessTheme}>
-        <Board />
+        <Game />
       </ThemeProvider>
     </div>
   )
