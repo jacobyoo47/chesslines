@@ -7,7 +7,7 @@ import { Grid } from '@material-ui/core'
 import { startPos, oneE4, e4c5Nf3 } from '../static/positions'
 
 /**
- * Wrapper for the Board / Sidebar. Handles the chessState and click-to-move.
+ * Wrapper for the Board / Infobar. Handles the chessState and click-to-move.
  */
 export default function Game(): JSX.Element {
   /**
