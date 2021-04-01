@@ -1,11 +1,7 @@
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
-import {
-  Typography,
-  Grid,
-  AppBar,
-  Toolbar,
-} from '@material-ui/core'
+import { Typography, Grid, AppBar, Toolbar } from '@material-ui/core'
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon'
+import GpsNotFixedIcon from '@material-ui/icons/GpsNotFixed'
 import Paper from '@material-ui/core/Paper'
 import Chess from './Chess'
 
@@ -69,8 +65,15 @@ export default function Infobar({ chessState }: infobarProps): JSX.Element {
       infoText: {
         color: theme.palette.secondary.light,
       },
+      lineText: {
+        color: theme.palette.primary.main,
+      },
       rookIcon: {
         marginRight: theme.spacing(2),
+      },
+      targetLineIcon: {
+        marginRight: theme.spacing(2),
+        color: theme.palette.primary.main,
       },
       turnText: {
         fontSize: '1vw',
@@ -122,13 +125,20 @@ export default function Infobar({ chessState }: infobarProps): JSX.Element {
               </Typography>
             </Toolbar>
           </AppBar>
+          <AppBar position="static" color="secondary">
+            <Toolbar>
+              <GpsNotFixedIcon className={classes.targetLineIcon} />
+              <Typography variant="h6" className={classes.lineText}>
+                Current line: None
+              </Typography>
+            </Toolbar>
+          </AppBar>
           <Typography variant="h6" className={classes.turnText}>
             {chessState.player} to move
           </Typography>
-          <Typography variant="h5" className={classes.moveText}>
-            Moves:{' '}
+          <Typography className={classes.moveText} align="left" >
+            {moveListString}
           </Typography>
-          <Typography className={classes.moveText}>{moveListString}</Typography>
         </Grid>
       </Paper>
     </div>
