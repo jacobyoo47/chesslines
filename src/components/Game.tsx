@@ -4,6 +4,7 @@ import Infobar from './Infobar'
 import Chess from './Chess'
 import { getFenPosition } from './Chess'
 import { Grid } from '@material-ui/core'
+import FlipBoardButton from './FlipBoardButton'
 import { startPos, oneE4, e4c5Nf3 } from '../static/positions'
 
 /**
@@ -22,6 +23,12 @@ export default function Game(): JSX.Element {
    */
 
   const [chessState, setState] = React.useState(getFenPosition(startPos))
+  const [boardFlipped, flipBoard] = React.useState(false)
+
+  const handleFlip = () => {
+    console.log(boardFlipped)
+    flipBoard(!boardFlipped)
+  }
 
   /**
    * Handles click-to-move
@@ -188,7 +195,12 @@ export default function Game(): JSX.Element {
       justify="center"
       alignItems="flex-start"
       wrap="nowrap">
-      <Board chessState={chessState} squareClick={handleClick} />
+      <FlipBoardButton boardFlipped={boardFlipped} onClick={handleFlip} />
+      <Board
+        chessState={chessState}
+        squareClick={handleClick}
+        boardFlipped={boardFlipped}
+      />
       <Infobar chessState={chessState} />
     </Grid>
   )

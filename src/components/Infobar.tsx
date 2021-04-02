@@ -1,7 +1,14 @@
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
-import { Typography, Grid, AppBar, Toolbar } from '@material-ui/core'
+import {
+  Typography,
+  Grid,
+  AppBar,
+  Toolbar,
+  IconButton,
+} from '@material-ui/core'
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon'
 import GpsNotFixedIcon from '@material-ui/icons/GpsNotFixed'
+import GitHubIcon from '@material-ui/icons/GitHub'
 import Paper from '@material-ui/core/Paper'
 import Chess from './Chess'
 
@@ -71,6 +78,10 @@ export default function Infobar({ chessState }: infobarProps): JSX.Element {
       rookIcon: {
         marginRight: theme.spacing(2),
       },
+      leftToolbarWrapper: {
+        flexGrow: 1,
+        display: 'flex',
+      },
       targetLineIcon: {
         marginRight: theme.spacing(2),
         color: theme.palette.primary.main,
@@ -119,24 +130,34 @@ export default function Infobar({ chessState }: infobarProps): JSX.Element {
           }}>
           <AppBar position="static">
             <Toolbar>
-              <RookIcon viewBox="0 0 512 512" className={classes.rookIcon} />
-              <Typography variant="h6" className={classes.infoText}>
-                chesslines --- by godpng
-              </Typography>
+              <div className={classes.leftToolbarWrapper}>
+                <RookIcon viewBox="0 0 512 512" className={classes.rookIcon} />
+                <Typography variant="h6" className={classes.infoText}>
+                  chesslines --- by jacob yoo
+                </Typography>
+              </div>
+              <IconButton
+                href="https://github.com/godpng/chesslines"
+                target="_blank"
+                edge="end"
+                color="inherit"
+                aria-label="menu">
+                <GitHubIcon />
+              </IconButton>
             </Toolbar>
           </AppBar>
           <AppBar position="static" color="secondary">
             <Toolbar>
               <GpsNotFixedIcon className={classes.targetLineIcon} />
               <Typography variant="h6" className={classes.lineText}>
-                Current line: None
+                No line selected (Sandbox)
               </Typography>
             </Toolbar>
           </AppBar>
           <Typography variant="h6" className={classes.turnText}>
             {chessState.player} to move
           </Typography>
-          <Typography className={classes.moveText} align="left" >
+          <Typography className={classes.moveText} align="left">
             {moveListString}
           </Typography>
         </Grid>

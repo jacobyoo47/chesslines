@@ -12,6 +12,7 @@ interface squareProps {
   isSelected: boolean
   isChecked: boolean
   isLastMove: boolean
+  isBoardFlipped: boolean
   piece?: Piece
   currPlayer: String
   coord: number
@@ -23,6 +24,7 @@ function Square({
   isSelected,
   isChecked,
   isLastMove,
+  isBoardFlipped,
   piece,
   currPlayer,
   coord,
@@ -124,12 +126,18 @@ function Square({
 
     let colText = ''
     let colClass = classes.colText
-    if (position > 55) {
-      const col = position - 56
+    if (
+      (position > 55 && !isBoardFlipped) ||
+      (position < 8 && isBoardFlipped)
+    ) {
+      const col = position % 8
       colText = String.fromCharCode(97 + col)
     }
 
-    if (position === 56) {
+    if (
+      (position === 56 && !isBoardFlipped) ||
+      (position === 0 && isBoardFlipped)
+    ) {
       rowClass = classes.cornerRowText
       colClass = classes.cornerColText
     }

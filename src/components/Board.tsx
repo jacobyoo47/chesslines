@@ -25,6 +25,7 @@ function renderSquare(
   isLight: boolean,
   isChecked: boolean,
   isLastMove: boolean,
+  isBoardFlipped: boolean,
   sourceSelection: number,
   position: number,
   player: string,
@@ -36,6 +37,7 @@ function renderSquare(
       isSelected={sourceSelection === position}
       isChecked={isChecked}
       isLastMove={isLastMove}
+      isBoardFlipped={isBoardFlipped}
       piece={piece}
       currPlayer={player}
       coord={position}
@@ -47,12 +49,17 @@ function renderSquare(
 interface boardProps {
   chessState: Chess
   squareClick: any
+  boardFlipped: boolean
 }
 
 /**
  * Renders the chessboard.
  */
-function Board({chessState, squareClick}: boardProps): JSX.Element {
+function Board({
+  chessState,
+  squareClick,
+  boardFlipped,
+}: boardProps): JSX.Element {
   const board = []
 
   const classes = useStyles()
@@ -69,10 +76,20 @@ function Board({chessState, squareClick}: boardProps): JSX.Element {
   )
 
   // Render 8x8 board
-  for (let i = 0; i < 8; i++) {
+  let start, end, incr
+  if (!boardFlipped) {
+    start = 0
+    end = 8
+    incr = 1
+  } else {
+    start = 7
+    end = -1
+    incr = -1
+  }
+  for (let i = start; i !== end; i += incr) {
     const squareRows = []
 
-    for (let j = 0; j < 8; j++) {
+    for (let j = 0; j !== 8; j++) {
       const squareIsLight =
         (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j)) ? true : false
       const coord = i * 8 + j
@@ -84,6 +101,7 @@ function Board({chessState, squareClick}: boardProps): JSX.Element {
           squareIsLight,
           checkSquare,
           isLastMoveSquare,
+          boardFlipped,
           chessState.sourceSelection,
           coord,
           chessState.player,
@@ -97,9 +115,7 @@ function Board({chessState, squareClick}: boardProps): JSX.Element {
 
   return (
     <div>
-      <div className={classes.root}>
-        {board}
-      </div>
+      <div className={classes.root}>{board}</div>
     </div>
   )
 }
