@@ -72,88 +72,14 @@ function Square({
         cursor: piece && currPlayer === piece.player ? 'pointer' : 'default',
       },
     },
-    textWrapper: {
-      width: '100%',
-      height: '100%',
-    },
-    colText: {
-      color: inverseSquareColor,
-      fontSize: '1vw',
-      position: 'relative',
-      left: '43%',
-      top: '104%',
-      padding: 0,
-      margin: 0,
-    },
-    rowText: {
-      color: inverseSquareColor,
-      fontSize: '1vw',
-      position: 'relative',
-      right: '68%',
-      bottom: '0%',
-      padding: 0,
-      margin: 0,
-    },
-    cornerColText: {
-      color: inverseSquareColor,
-      fontSize: '1vw',
-      position: 'relative',
-      left: '40%',
-      top: '84%',
-      padding: 0,
-      margin: 0,
-    },
-    cornerRowText: {
-      color: inverseSquareColor,
-      fontSize: '1vw',
-      position: 'relative',
-      right: '68%',
-      bottom: '0%',
-      padding: 0,
-      margin: 0,
-    },
   }))
 
   const classes = useStyles()
 
-  const coordText = (position: number) => {
-    let rowText = ''
-    let rowClass = classes.rowText
-    if (position % 8 === 0) {
-      const row = 8 - position / 8
-      rowText = row.toString()
-    }
-
-    let colText = ''
-    let colClass = classes.colText
-    if (
-      (position > 55 && !isBoardFlipped) ||
-      (position < 8 && isBoardFlipped)
-    ) {
-      const col = position % 8
-      colText = String.fromCharCode(97 + col)
-    }
-
-    if (
-      (position === 56 && !isBoardFlipped) ||
-      (position === 0 && isBoardFlipped)
-    ) {
-      rowClass = classes.cornerRowText
-      colClass = classes.cornerColText
-    }
-
-    return (
-      <div className={classes.textWrapper}>
-        <div className={rowClass}>{rowText}</div>
-        <div className={colClass}>{colText}</div>
-      </div>
-    )
-  }
-
   return (
-    <button className={classes.square} onClick={onClick}>
-      {coordText(coord)}
-    </button>
+    <>
+      <button className={classes.square} onClick={onClick}></button>
+    </>
   )
 }
 

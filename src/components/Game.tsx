@@ -26,7 +26,6 @@ export default function Game(): JSX.Element {
   const [boardFlipped, flipBoard] = React.useState(false)
 
   const handleFlip = () => {
-    console.log(boardFlipped)
     flipBoard(!boardFlipped)
   }
 

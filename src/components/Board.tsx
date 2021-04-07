@@ -3,16 +3,35 @@ import Chess from './Chess'
 import { makeStyles } from '@material-ui/core/styles'
 import Square from './Square'
 import Piece from './pieces/Piece'
+import { Grid } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     //backgroundColor: theme.palette.info.main,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   turnText: {
     fontSize: 24,
     padding: '.5em',
     margin: 0,
+  },
+  rowText: {
+    color: 'red',
+    fontSize: '1vw',
+    width: '1vw',
+    float: 'left',
+    paddingRight: '.3vw',
+    margin: 0,
+  },
+  colText: {
+    color: 'red',
+    fontSize: '1vw',
+    width: '1vw',
+    height: '1vw',
+    margin: 0,
+  },
+  colTextWrapper: {
+    justifyContent: 'space-between',
   },
 }))
 
@@ -64,6 +83,34 @@ function Board({
 
   const classes = useStyles()
 
+  function renderText(position: number, column: boolean): JSX.Element {
+    // Calculate inverse square color
+    const i = Math.floor(position / 8)
+    const j = position % 8
+    const inverseSquareColor =
+      (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j))
+        ? '#BC6C25'
+        : '#DDA15E'
+    if (!column) {
+      const row = 8 - position / 8
+      const text = row.toString()
+      return (
+        <p style={{ color: inverseSquareColor }} className={classes.rowText}>
+          {text}
+        </p>
+      )
+    } else {
+      // When board is flipped, columns should also be flipped
+      const col = boardFlipped ? 7 - (position % 8) : position % 8
+      const text = String.fromCharCode(97 + col)
+      return (
+        <span style={{ color: inverseSquareColor }} className={classes.colText}>
+          {text}
+        </span>
+      )
+    }
+  }
+
   const currKing = chessState.isWhiteTurn()
     ? chessState.kingPos[0]
     : chessState.kingPos[1]
@@ -95,6 +142,10 @@ function Board({
       const coord = i * 8 + j
       const checkSquare = coord === currKing && kingChecked // highlight checked king square red
       const isLastMoveSquare = chessState.lastMove.includes(coord)
+      // Add row text
+      if (j === 0) {
+        squareRows.push(renderText(coord, false))
+      }
       squareRows.push(
         renderSquare(
           chessState.squares[coord],
@@ -112,6 +163,20 @@ function Board({
 
     board.push(<div className="board-row">{squareRows}</div>)
   }
+  // Add col text
+  const colTextRow = []
+  colTextRow.push(
+    <span style={{ paddingRight: '.3vw' }} className={classes.colText}></span>,
+  )
+  for (let i = 0; i < 8; i++) {
+    const coord = boardFlipped ? i : 56 + i
+    colTextRow.push(renderText(coord, true))
+  }
+  board.push(
+    <Grid container className={classes.colTextWrapper}>
+      {colTextRow}
+    </Grid>,
+  )
 
   return (
     <div>
