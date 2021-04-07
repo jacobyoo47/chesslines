@@ -92,7 +92,7 @@ function Board({
         ? '#BC6C25'
         : '#DDA15E'
     if (!column) {
-      const row = 8 - position / 8
+      const row = 8 - i
       const text = row.toString()
       return (
         <p style={{ color: inverseSquareColor }} className={classes.rowText}>
@@ -101,7 +101,7 @@ function Board({
       )
     } else {
       // When board is flipped, columns should also be flipped
-      const col = boardFlipped ? 7 - (position % 8) : position % 8
+      const col = boardFlipped ? 7 - j : j
       const text = String.fromCharCode(97 + col)
       return (
         <span style={{ color: inverseSquareColor }} className={classes.colText}>
@@ -136,14 +136,14 @@ function Board({
   for (let i = start; i !== end; i += incr) {
     const squareRows = []
 
-    for (let j = 0; j !== 8; j++) {
+    for (let j: number = start; j !== end; j += incr) {
       const squareIsLight =
         (isEven(i) && isEven(j)) || (!isEven(i) && !isEven(j)) ? true : false
       const coord = i * 8 + j
       const checkSquare = coord === currKing && kingChecked // highlight checked king square red
       const isLastMoveSquare = chessState.lastMove.includes(coord)
       // Add row text
-      if (j === 0) {
+      if (j === start) {
         squareRows.push(renderText(coord, false))
       }
       squareRows.push(
