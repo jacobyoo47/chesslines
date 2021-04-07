@@ -48,8 +48,6 @@ function Square({
     }
   }
 
-  const inverseSquareColor = isLight ? darkSquare : lightSquare
-
   const useStyles = makeStyles((theme) => ({
     square: {
       backgroundColor: getBGColor(isLight, isSelected, isChecked, isLastMove),

@@ -1,4 +1,4 @@
-import { IconButton, ThemeProvider } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
 import AutorenewIcon from '@material-ui/icons/Autorenew'
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 

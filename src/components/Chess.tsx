@@ -12,8 +12,8 @@ export const getFenPosition = (fen: string): Chess => {
   const position = fenList[0].split('')
   const playerTurn = fenList[1]
   const fenCastling = fenList[2]
-  const enPassant = fenList[3]
-  const halfMoves = fenList[4]
+  // const enPassant = fenList[3]
+  // const halfMoves = fenList[4]
   const fullMoves = fenList[5]
   const reUpper = /[A-Z]/
   let wKing = 0
@@ -173,7 +173,7 @@ export default class Chess {
 
     let res = ''
 
-    const srcRowName = (8 - Math.floor(source / 8)).toString()
+    // const srcRowName = (8 - Math.floor(source / 8)).toString()
     const srcFileName = String.fromCharCode(97 + (source % 8))
     const destRowName = (8 - Math.floor(dest / 8)).toString()
     const destFileName = String.fromCharCode(97 + (dest % 8))
