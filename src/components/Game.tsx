@@ -5,7 +5,7 @@ import Chess from './Chess'
 import { getFenPosition } from './Chess'
 import { Grid } from '@material-ui/core'
 import FlipBoardButton from './FlipBoardButton'
-import { startPos } from '../static/positions'
+import { startPos, danishGambitLine } from '../static/positions'
 
 /**
  * Wrapper for the Board / Infobar. Handles the chessState and click-to-move.
@@ -24,6 +24,9 @@ export default function Game(): JSX.Element {
 
   const [chessState, setState] = React.useState(getFenPosition(startPos))
   const [boardFlipped, flipBoard] = React.useState(false)
+
+  // currLine - current chess line being practiced. Array<String>() | undefined
+  const [currLine, setLine] = React.useState(danishGambitLine)
 
   const handleFlip = () => {
     flipBoard(!boardFlipped)
@@ -64,11 +67,12 @@ export default function Game(): JSX.Element {
         )
       }
     } else if (chessState.sourceSelection > -1) {
-      // Piece selected
+      // Piece is already selected
       if (
         squares[i] !== undefined &&
         squares[i]?.player === chessState.player
       ) {
+        // Select a different piece
         setState(
           new Chess({
             ...chessState,
@@ -77,6 +81,7 @@ export default function Game(): JSX.Element {
           }),
         )
       } else {
+        // Attempt to move piece to destination
         const isDestEnemyOccupied = squares[i] ? true : false
         const currPiece = squares[chessState.sourceSelection]
         // currPiece should never be undefined, since sourceSelection is a valid piece
@@ -143,38 +148,54 @@ export default function Game(): JSX.Element {
           )
 
           // Update moveList
-          const moveList = chessState.getMoveList()
-          moveList.push(
-            chessState.getMoveName(
-              currPiece!.name,
-              captured,
-              newCastlingStatus.dir,
-              checkedEnemyKing,
-              chessState.sourceSelection,
-              i,
-            ),
+          const currMoveName = chessState.getMoveName(
+            currPiece!.name,
+            captured,
+            newCastlingStatus.dir,
+            checkedEnemyKing,
+            chessState.sourceSelection,
+            i,
           )
+          const moveList = chessState.getMoveList()
+          moveList.push(currMoveName)
 
           console.log(fallenPieces)
           console.log(moveList)
 
-          setState(
-            new Chess({
-              sourceSelection: -1,
-              squares: squares,
-              player: newPlayer,
-              status: '',
-              kingPos: newKingPos,
-              lastMove: [chessState.sourceSelection, i],
-              castling: newCastlingStatus.newCastling,
-              moveNo: !chessState.isWhiteTurn()
-                ? chessState.moveNo + 1
-                : chessState.moveNo,
-              moveList: moveList,
-              fallenPieces: fallenPieces,
-            }),
-          )
+          // Make sure player has played the next correct move
+          const currentHalfMove = chessState.isWhiteTurn() ? chessState.moveNo * 2 - 2 : chessState.moveNo * 2 - 1
+          if (
+            currLine === undefined ||
+            currLine![currentHalfMove] === currMoveName
+          ) {
+            // Update chess state
+            setState(
+              new Chess({
+                sourceSelection: -1,
+                squares: squares,
+                player: newPlayer,
+                status: '',
+                kingPos: newKingPos,
+                lastMove: [chessState.sourceSelection, i],
+                castling: newCastlingStatus.newCastling,
+                moveNo: !chessState.isWhiteTurn()
+                  ? chessState.moveNo + 1
+                  : chessState.moveNo,
+                moveList: moveList,
+                fallenPieces: fallenPieces,
+              }),
+            )
+          } else {
+            setState(
+              new Chess({
+                ...chessState,
+                status: 'Incorrect move',
+                sourceSelection: -1,
+              }),
+            )
+          }
         } else {
+          // Invalid selection
           setState(
             new Chess({
               ...chessState,

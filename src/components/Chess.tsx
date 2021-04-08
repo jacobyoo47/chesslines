@@ -155,6 +155,9 @@ export default class Chess {
     return this.moveList.slice()
   }
 
+  /**
+   * Gets the movename for move tracker
+   */
   getMoveName(
     pieceName: string,
     captured: boolean,
@@ -184,8 +187,7 @@ export default class Chess {
       res += srcFileName
     }
 
-    const destPos =
-      destFileName + destRowName
+    const destPos = destFileName + destRowName
 
     if (captured) res += 'x'
 
@@ -285,6 +287,9 @@ export default class Chess {
     return false
   }
 
+  /**
+   * Simulates a move and checks if it puts the current player's king in check
+   */
   isKingInCheck(dest: number) {
     // Check for checks -- simulate move
     const checkSquares = this.getSquares()
@@ -423,6 +428,6 @@ export default class Chess {
         newCastling[3] = false
       }
     }
-    return {newCastling, dir}
+    return { newCastling, dir }
   }
 }

@@ -24,8 +24,8 @@ export default function FlipBoardButton({
 
   const classes = useStyles()
   return (
-    <IconButton className={classes.root} edge="start" aria-label="menu">
-      <AutorenewIcon onClick={onClick} />
+    <IconButton className={classes.root} edge="start" aria-label="menu" onClick={onClick}>
+      <AutorenewIcon />
     </IconButton>
   )
 }
