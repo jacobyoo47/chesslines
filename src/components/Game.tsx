@@ -159,10 +159,7 @@ export default function Game(): JSX.Element {
           const moveList = chessState.getMoveList()
           moveList.push(currMoveName)
 
-          console.log(fallenPieces)
-          console.log(moveList)
-
-          // Make sure player has played the next correct move
+          // Make sure player has played the next correct move (when currLine !== undefined)
           const currentHalfMove = chessState.isWhiteTurn() ? chessState.moveNo * 2 - 2 : chessState.moveNo * 2 - 1
           if (
             currLine === undefined ||

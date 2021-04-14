@@ -1,19 +1,111 @@
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
+import {
+  Theme,
+  createStyles,
+  makeStyles,
+  useTheme,
+} from '@material-ui/core/styles'
 import {
   Typography,
   Grid,
   AppBar,
   Toolbar,
   IconButton,
+  Tabs,
+  Tab,
 } from '@material-ui/core'
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon'
 import GpsNotFixedIcon from '@material-ui/icons/GpsNotFixed'
 import GitHubIcon from '@material-ui/icons/GitHub'
 import Paper from '@material-ui/core/Paper'
 import Chess from './Chess'
+import React from 'react'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      '& > *': {
+        marginLeft: theme.spacing(3),
+        marginTop: 0,
+        width: '20vw',
+        height: '48vw',
+      },
+    },
+    infoBar: {
+      background: theme.palette.info.light,
+      width: '20vw',
+    },
+    infoText: {
+      color: theme.palette.secondary.light,
+      fontSize: '0.8vw',
+    },
+    lineText: {
+      color: theme.palette.primary.main,
+      fontSize: '0.8vw',
+    },
+    rookIcon: {
+      marginRight: theme.spacing(2),
+    },
+    leftToolbarWrapper: {
+      flexGrow: 1,
+      display: 'flex',
+    },
+    targetLineIcon: {
+      marginRight: theme.spacing(2),
+      color: theme.palette.primary.main,
+    },
+    turnText: {
+      fontSize: '1vw',
+      marginTop: theme.spacing(2),
+      marginLeft: theme.spacing(3),
+    },
+    moveText: {
+      fontSize: '.7vw',
+      marginTop: theme.spacing(2),
+      marginLeft: theme.spacing(3),
+      color: theme.palette.secondary.main,
+    },
+    tab: {
+      minWidth: '60px',
+    },
+  }),
+)
 
 interface infobarProps {
   chessState: Chess
+}
+
+interface TabPanelProps {
+  children?: React.ReactNode
+  index: any
+  value: any
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}>
+      {value === index && (
+        <Grid
+          container
+          direction="column"
+          alignItems="flex-start"
+          justify="space-between"
+          style={{
+            display: 'flex',
+          }}>
+          {children}
+        </Grid>
+      )}
+    </div>
+  )
 }
 
 function RookIcon(props: SvgIconProps) {
@@ -54,56 +146,13 @@ function RookIcon(props: SvgIconProps) {
 }
 
 export default function Infobar({ chessState }: infobarProps): JSX.Element {
-  const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-      root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        '& > *': {
-          marginLeft: theme.spacing(3),
-          marginTop: 0,
-          width: '20vw',
-          height: '48vw',
-        },
-      },
-      infoBar: {
-        background: theme.palette.info.light,
-      },
-      infoText: {
-        color: theme.palette.secondary.light,
-      },
-      lineText: {
-        color: theme.palette.primary.main,
-      },
-      rookIcon: {
-        marginRight: theme.spacing(2),
-      },
-      leftToolbarWrapper: {
-        flexGrow: 1,
-        display: 'flex',
-      },
-      targetLineIcon: {
-        marginRight: theme.spacing(2),
-        color: theme.palette.primary.main,
-      },
-      turnText: {
-        fontSize: '1vw',
-        marginTop: theme.spacing(2),
-        marginLeft: theme.spacing(3),
-        color:
-          chessState.player === 'white'
-            ? theme.palette.warning.light
-            : theme.palette.warning.dark,
-      },
-      moveText: {
-        fontSize: '.7vw',
-        marginTop: theme.spacing(2),
-        marginLeft: theme.spacing(3),
-        color: theme.palette.secondary.main,
-      },
-    }),
-  )
+  const theme = useTheme()
   const classes = useStyles()
+  const [value, setValue] = React.useState(0)
+
+  const handleSwitch = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setValue(newValue)
+  }
 
   // Create move list
   let moveListString = ''
@@ -120,14 +169,18 @@ export default function Infobar({ chessState }: infobarProps): JSX.Element {
   return (
     <div className={classes.root}>
       <Paper elevation={12} className={classes.infoBar}>
-        <Grid
-          container
-          direction="column"
-          alignItems="flex-start"
-          justify="space-between"
-          style={{
-            display: 'flex',
-          }}>
+        <Tabs
+          value={value}
+          onChange={handleSwitch}
+          aria-label="chesslines tabs"
+          variant="fullWidth"
+          textColor="primary"
+          indicatorColor="secondary"
+          style={{ backgroundColor: '#613D1D' }}>
+          <Tab className={classes.tab} label="Main" id={`tab-0`} aria-controls={`tabpanel-0`} />
+          <Tab className={classes.tab} label="Lines" id={`tab-1`} aria-controls={`tabpanel-1`} />
+        </Tabs>
+        <TabPanel value={value} index={0}>
           <AppBar position="static">
             <Toolbar>
               <div className={classes.leftToolbarWrapper}>
@@ -154,13 +207,21 @@ export default function Infobar({ chessState }: infobarProps): JSX.Element {
               </Typography>
             </Toolbar>
           </AppBar>
-          <Typography variant="h6" className={classes.turnText}>
+          <Typography
+            variant="h6"
+            style={{
+              color:
+                chessState.player === 'white'
+                  ? theme.palette.warning.light
+                  : theme.palette.warning.dark,
+            }}
+            className={classes.turnText}>
             {chessState.player} to move
           </Typography>
           <Typography className={classes.moveText} align="left">
             {moveListString}
           </Typography>
-        </Grid>
+        </TabPanel>
       </Paper>
     </div>
   )
