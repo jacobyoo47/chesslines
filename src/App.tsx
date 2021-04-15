@@ -9,6 +9,7 @@ const chessTheme = createMuiTheme({
     primary: {
       // main: '#20FC8F',
       main: '#C27A3A',
+      dark: '#613D1D',
     },
     secondary: {
       // main: '#3F5E5A',
@@ -28,6 +29,12 @@ const chessTheme = createMuiTheme({
       main: '#DDA15E',
       light: '#DDA15E',
       dark: '#BC6C25',
+    },
+
+    error: {
+      main: '#858783',
+      dark: '#777975',
+      light: '#A9ABA8',
     },
   },
 })

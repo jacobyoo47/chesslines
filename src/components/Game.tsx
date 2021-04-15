@@ -26,7 +26,20 @@ export default function Game(): JSX.Element {
   const [boardFlipped, flipBoard] = React.useState(false)
 
   // currLine - current chess line being practiced. Array<String>() | undefined
-  const [currLine, setLine] = React.useState(danishGambitLine)
+  const [lineState, setLine] = React.useState<
+    { line: string[]; title: string } | undefined
+  >(undefined)
+
+  const currLine = lineState?.line
+
+  const handleLine = (
+    lineState: { line: string[]; title: string },
+    startFen: string,
+  ) => {
+    console.log(lineState)
+    setState(getFenPosition(startFen))
+    setLine(lineState)
+  }
 
   const handleFlip = () => {
     flipBoard(!boardFlipped)
@@ -37,7 +50,6 @@ export default function Game(): JSX.Element {
    * @param i
    */
   const handleClick = (i: number) => {
-    //console.log(chessState)
     const squares = chessState.getSquares()
     const whiteTurn = chessState.isWhiteTurn()
     // console.log(i)
@@ -160,7 +172,9 @@ export default function Game(): JSX.Element {
           moveList.push(currMoveName)
 
           // Make sure player has played the next correct move (when currLine !== undefined)
-          const currentHalfMove = chessState.isWhiteTurn() ? chessState.moveNo * 2 - 2 : chessState.moveNo * 2 - 1
+          const currentHalfMove = chessState.isWhiteTurn()
+            ? chessState.moveNo * 2 - 2
+            : chessState.moveNo * 2 - 1
           if (
             currLine === undefined ||
             currLine![currentHalfMove] === currMoveName
@@ -218,7 +232,11 @@ export default function Game(): JSX.Element {
         squareClick={handleClick}
         boardFlipped={boardFlipped}
       />
-      <Infobar chessState={chessState} />
+      <Infobar
+        chessState={chessState}
+        handleLine={handleLine}
+        lineState={lineState}
+      />
     </Grid>
   )
 }
