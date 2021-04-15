@@ -145,7 +145,7 @@ interface customAccordionProps {
 }
 
 function CustomAccordion(props: customAccordionProps) {
-  const { classes, title, theme, handleLine, line, startFen, ...other } = props
+  const { classes, title, theme, handleLine, line, startFen } = props
   const newLineState = { line: line, title: title }
   return (
     <Accordion
@@ -226,7 +226,6 @@ function MainTab(props: mainTabProps) {
     chessState,
     lineState,
     handleLine,
-    ...other
   } = props
 
   const currLineTitle =
@@ -302,14 +301,13 @@ function MainTab(props: mainTabProps) {
 
 interface linesTabProps {
   value: number
-  chessState: Chess
   classes: any
   theme: Theme
   handleLine: any
 }
 
 function LinesTab(props: linesTabProps) {
-  const { value, classes, theme, chessState, handleLine, ...other } = props
+  const { value, classes, theme, handleLine } = props
 
   const [expanded, setExpanded] = React.useState<string | false>('panel1')
 
@@ -444,7 +442,6 @@ export default function Infobar({
         />
         <LinesTab
           value={value}
-          chessState={chessState}
           theme={theme}
           classes={classes}
           handleLine={handleLineChange}

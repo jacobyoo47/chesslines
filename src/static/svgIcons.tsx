@@ -2,7 +2,7 @@ import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon'
 
 export function KingIcon(props: SvgIconProps) {
   return (
-    <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg" />
+    <img alt="not found" src="https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg" />
   )
 }
 
