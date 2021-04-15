@@ -31,5 +31,5 @@ export const bongcloudDrawLine = [
   'Ke1',
   'Ke8',
   'Ke2',
-  'Ke7,'
+  'Ke7',
 ]

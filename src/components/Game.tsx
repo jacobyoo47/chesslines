@@ -168,6 +168,7 @@ export default function Game(): JSX.Element {
             chessState.sourceSelection,
             i,
           )
+
           const moveList = chessState.getMoveList()
           moveList.push(currMoveName)
 
