@@ -85,6 +85,9 @@ const useStyles = makeStyles((theme: Theme) =>
     lineAccordionsWrapper: {
       width: '100%',
     },
+    lineButton: {
+      marginRight: theme.spacing(3),
+    },
     openingAccordion: {
       width: '100%',
       backgroundColor: theme.palette.error.light,
@@ -137,6 +140,7 @@ const AccordionDetails = withStyles((theme) => ({
 
 interface customAccordionProps {
   title: String
+  help: string
   theme: Theme
   classes: any
   line: string[]
@@ -145,12 +149,13 @@ interface customAccordionProps {
 }
 
 function CustomAccordion({
-  classes,
   title,
+  help,
   theme,
-  handleLine,
+  classes,
   line,
   startFen,
+  handleLine,
 }: customAccordionProps) {
   const newLineState = { line: line, title: title }
   return (
@@ -172,8 +177,17 @@ function CustomAccordion({
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleLine(newLineState, startFen)}>
+            onClick={() => handleLine(newLineState, startFen)}
+            className={classes.lineButton}>
             Start
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            href={help}
+            target="_blank"
+            className={classes.lineButton}>
+            Help
           </Button>
         </Toolbar>
       </AccordionDetails>
@@ -337,6 +351,7 @@ function LinesTab({ value, classes, theme, handleLine }: linesTabProps) {
             <CustomAccordion
               classes={classes}
               title="Danish Gambit"
+              help="https://en.wikipedia.org/wiki/Danish_Gambit#Alekhine_Variation:_4.Nxc3"
               theme={theme}
               handleLine={handleLine}
               line={danishGambitLine}
@@ -358,6 +373,7 @@ function LinesTab({ value, classes, theme, handleLine }: linesTabProps) {
             <CustomAccordion
               classes={classes}
               title="Bongcloud Draw"
+              help="https://www.chessgames.com/perl/chessgame?gid=2029671"
               theme={theme}
               handleLine={handleLine}
               line={bongcloudDrawLine}
