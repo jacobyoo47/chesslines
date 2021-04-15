@@ -5,7 +5,7 @@ import Chess from './Chess'
 import { getFenPosition } from './Chess'
 import { Grid } from '@material-ui/core'
 import FlipBoardButton from './FlipBoardButton'
-import { startPos, danishGambitLine } from '../static/positions'
+import { startPos } from '../static/positions'
 
 /**
  * Wrapper for the Board / Infobar. Handles the chessState and click-to-move.
