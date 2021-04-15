@@ -144,8 +144,14 @@ interface customAccordionProps {
   handleLine: any
 }
 
-function CustomAccordion(props: customAccordionProps) {
-  const { classes, title, theme, handleLine, line, startFen } = props
+function CustomAccordion({
+  classes,
+  title,
+  theme,
+  handleLine,
+  line,
+  startFen,
+}: customAccordionProps) {
   const newLineState = { line: line, title: title }
   return (
     <Accordion
@@ -217,17 +223,15 @@ interface mainTabProps {
   handleLine: any
 }
 
-function MainTab(props: mainTabProps) {
-  const {
-    value,
-    classes,
-    theme,
-    moveListString,
-    chessState,
-    lineState,
-    handleLine,
-  } = props
-
+function MainTab({
+  value,
+  classes,
+  theme,
+  moveListString,
+  chessState,
+  lineState,
+  handleLine,
+}: mainTabProps) {
   const currLineTitle =
     lineState !== undefined ? lineState.title : 'No line selected (Sandbox)'
   const lineIcon =
@@ -306,9 +310,7 @@ interface linesTabProps {
   handleLine: any
 }
 
-function LinesTab(props: linesTabProps) {
-  const { value, classes, theme, handleLine } = props
-
+function LinesTab({ value, classes, theme, handleLine }: linesTabProps) {
   const [expanded, setExpanded] = React.useState<string | false>('panel1')
 
   const handleChange = (panel: string) => (
