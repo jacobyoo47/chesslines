@@ -182,7 +182,7 @@ export default class Chess {
     const destFileName = String.fromCharCode(97 + (dest % 8))
 
     if (pieceName.toLowerCase() !== 'p') {
-      res += pieceName
+      res += pieceName.toUpperCase()
     } else if (captured) {
       res += srcFileName
     }

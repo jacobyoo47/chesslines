@@ -25,7 +25,11 @@ import GpsNotFixedIcon from '@material-ui/icons/GpsNotFixed'
 import GitHubIcon from '@material-ui/icons/GitHub'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Paper from '@material-ui/core/Paper'
-import { startPos, danishGambitLine } from '../static/positions'
+import {
+  startPos,
+  danishGambitLine,
+  bongcloudDrawLine,
+} from '../static/positions'
 import Chess from './Chess'
 import React from 'react'
 
@@ -50,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.8vw',
     },
     lineText: {
-      color: theme.palette.primary.main,
+      color: theme.palette.primary.dark,
       fontSize: '0.8vw',
     },
     rookIcon: {
@@ -229,9 +233,15 @@ function MainTab(props: mainTabProps) {
     lineState !== undefined ? lineState.title : 'No line selected (Sandbox)'
   const lineIcon =
     lineState !== undefined ? (
-      <GpsFixedIcon className={classes.targetLineIcon} />
+      <GpsFixedIcon
+        className={classes.targetLineIcon}
+        style={{ color: theme.palette.primary.dark }}
+      />
     ) : (
-      <GpsNotFixedIcon className={classes.targetLineIcon} />
+      <GpsNotFixedIcon
+        className={classes.targetLineIcon}
+        style={{ color: theme.palette.primary.dark }}
+      />
     )
 
   return (
@@ -265,10 +275,9 @@ function MainTab(props: mainTabProps) {
           {lineState ? (
             <IconButton
               edge="end"
-              color="inherit"
               aria-label="menu"
               onClick={() => handleLine(undefined, startPos)}>
-              <ClearIcon />
+              <ClearIcon style={{ color: theme.palette.primary.dark }} />
             </IconButton>
           ) : null}
         </Toolbar>
@@ -325,7 +334,6 @@ function LinesTab(props: linesTabProps) {
             <Typography>Openings</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            {/* OPENINGS */}
             <CustomAccordion
               classes={classes}
               title="Danish Gambit"
@@ -346,7 +354,16 @@ function LinesTab(props: linesTabProps) {
             expandIcon={<ExpandMoreIcon />}>
             <Typography>Other</Typography>
           </AccordionSummary>
-          <AccordionDetails></AccordionDetails>
+          <AccordionDetails>
+            <CustomAccordion
+              classes={classes}
+              title="Bongcloud Draw"
+              theme={theme}
+              handleLine={handleLine}
+              line={bongcloudDrawLine}
+              startFen={startPos}
+            />
+          </AccordionDetails>
         </Accordion>
       </div>
     </TabPanel>
@@ -372,7 +389,10 @@ export default function Infobar({
     setValue(newValue)
   }
 
-  const handleLineChange = (lineState: {line: string[], title: string} | undefined, startFen: string) => {
+  const handleLineChange = (
+    lineState: { line: string[]; title: string } | undefined,
+    startFen: string,
+  ) => {
     handleLine(lineState, startFen)
     setValue(0) // Go back to main tab after starting new line
   }

@@ -15,6 +15,21 @@ export const danishGambitLine = [
   'c3',
   'd6',
   'Bc4',
-  'nc6',
+  'Nc6',
   'Nf3',
+]
+
+export const bongcloudDrawLine = [
+  'e4',
+  'e5',
+  'Ke2',
+  'Ke7',
+  'Ke1',
+  'Ke8',
+  'Ke2',
+  'Ke7',
+  'Ke1',
+  'Ke8',
+  'Ke2',
+  'Ke7,'
 ]
