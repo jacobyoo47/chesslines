@@ -77,13 +77,11 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '.7vw',
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(1),
-      color: theme.palette.secondary.main,
     },
     moveNumberText: {
       fontSize: '.5vw',
       marginTop: theme.spacing(2),
       marginLeft: theme.spacing(3),
-      color: theme.palette.secondary.main,
     },
     tab: {
       minWidth: '60px',
@@ -433,18 +431,28 @@ export default function Infobar({
   moveList.forEach((move, i) => {
     const currMove = Math.floor(i / 2) + 1
     const moveText = i < moveListLen ? move : '??'
+    const moveColor =
+      i === chessState.selectedMove
+        ? theme.palette.warning.dark
+        : theme.palette.warning.light
     if (i % 2 === 0) {
       moveGrid.push(
         <Grid item>
-          <Typography className={classes.moveNumberText} align="left">
-            {currMove.toString() + '.'}
+          <Typography
+            className={classes.moveNumberText}
+            style={{ color: theme.palette.warning.light }}
+            align="left">
+            {currMove.toString()}
           </Typography>
         </Grid>,
       )
     }
     moveGrid.push(
       <Grid item>
-        <Typography className={classes.moveText} align="left">
+        <Typography
+          className={classes.moveText}
+          style={{ color: moveColor }}
+          align="left">
           {moveText}
         </Typography>
       </Grid>,

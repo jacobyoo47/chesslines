@@ -193,6 +193,10 @@ export default function Game(): JSX.Element {
                 status: '',
                 kingPos: newKingPos,
                 lastMove: [chessState.sourceSelection, i],
+                selectedMove:
+                  chessState.selectedMove === undefined
+                    ? 0
+                    : chessState.selectedMove + 1,
                 castling: newCastlingStatus.newCastling,
                 moveNo: !chessState.isWhiteTurn()
                   ? chessState.moveNo + 1

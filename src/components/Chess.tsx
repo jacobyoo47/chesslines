@@ -90,6 +90,7 @@ export const getFenPosition = (fen: string): Chess => {
     sourceSelection: -1,
     status: 'default',
     lastMove: new Array<number>(),
+    selectedMove: undefined,
     castling: castling,
     moveNo: parseInt(fullMoves),
     moveList: new Array<string>(),
@@ -104,6 +105,7 @@ interface chessProps {
   sourceSelection: number
   status: string
   lastMove: Array<number>
+  selectedMove: number | undefined,
   castling: Array<boolean>
   moveNo: number
   moveList: Array<string>
@@ -121,6 +123,7 @@ export default class Chess {
   sourceSelection: number
   status: string
   lastMove: Array<number>
+  selectedMove: number | undefined
   castling: Array<boolean>
   moveNo: number
   moveList: Array<string>
@@ -133,6 +136,7 @@ export default class Chess {
     this.sourceSelection = state.sourceSelection
     this.status = state.status
     this.lastMove = state.lastMove
+    this.selectedMove = state.selectedMove
     this.castling = state.castling
     this.moveNo = state.moveNo
     this.moveList = state.moveList
