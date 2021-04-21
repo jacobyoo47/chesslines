@@ -19,6 +19,8 @@ import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 import { RookIcon, KingIcon } from '../static/svgIcons'
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import ClearIcon from '@material-ui/icons/Clear'
 import GpsFixedIcon from '@material-ui/icons/GpsFixed'
 import GpsNotFixedIcon from '@material-ui/icons/GpsNotFixed'
@@ -71,7 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
     turnText: {
       fontSize: '1vw',
       marginTop: theme.spacing(2),
-      marginLeft: theme.spacing(3),
+      marginLeft: theme.spacing(2),
     },
     moveText: {
       fontSize: '.7vw',
@@ -81,7 +83,7 @@ const useStyles = makeStyles((theme: Theme) =>
     moveNumberText: {
       fontSize: '.5vw',
       marginTop: theme.spacing(2),
-      marginLeft: theme.spacing(3),
+      marginLeft: theme.spacing(2),
     },
     tab: {
       minWidth: '60px',
@@ -245,6 +247,7 @@ interface mainTabProps {
   moveGrid: Array<any>
   lineState: { line: string[]; title: string } | undefined
   handleLine: any
+  handleSelection: any
 }
 
 function MainTab({
@@ -255,6 +258,7 @@ function MainTab({
   chessState,
   lineState,
   handleLine,
+  handleSelection,
 }: mainTabProps) {
   const currLineTitle =
     lineState !== undefined
@@ -322,6 +326,28 @@ function MainTab({
         className={classes.turnText}>
         {chessState.player} to move
       </Typography>
+      <div style={{ marginTop: 'auto' }}>
+        <IconButton
+          style={{ color: theme.palette.warning.light }}
+          onClick={() =>
+            handleSelection(
+              chessState.selectedMove > 0 ? chessState.selectedMove - 1 : 0,
+            )
+          }>
+          <ArrowBackIcon />
+        </IconButton>
+        <IconButton
+          style={{ color: theme.palette.warning.light }}
+          onClick={() =>
+            handleSelection(
+              chessState.selectedMove < chessState.moveList.length - 1
+                ? chessState.selectedMove + 1
+                : chessState.selectedMove,
+            )
+          }>
+          <ArrowForwardIcon />
+        </IconButton>
+      </div>
       <Grid container direction="row">
         {moveGrid}
       </Grid>
@@ -400,12 +426,14 @@ interface infobarProps {
   chessState: Chess
   lineState: { line: string[]; title: string } | undefined
   handleLine: any
+  handleSelection: any
 }
 
 export default function Infobar({
   chessState,
   lineState,
   handleLine,
+  handleSelection,
 }: infobarProps): JSX.Element {
   const theme = useTheme()
   const classes = useStyles()
@@ -469,7 +497,10 @@ export default function Infobar({
           variant="fullWidth"
           textColor="primary"
           indicatorColor="secondary"
-          style={{ backgroundColor: theme.palette.primary.dark }}>
+          style={{
+            backgroundColor: theme.palette.primary.dark,
+            height: '2vw',
+          }}>
           <Tab
             className={classes.tab}
             label="Main"
@@ -491,6 +522,7 @@ export default function Infobar({
           moveGrid={moveGrid}
           lineState={lineState}
           handleLine={handleLine}
+          handleSelection={handleSelection}
         />
         <LinesTab
           value={value}

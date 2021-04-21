@@ -45,6 +45,15 @@ export default function Game(): JSX.Element {
     setLine(lineState)
   }
 
+  const handleSelection = (index: number) => {
+    setState(
+      new Chess({
+        ...chessState,
+        selectedMove: index,
+      }),
+    )
+  }
+
   const handleFlip = () => {
     flipBoard(!boardFlipped)
   }
@@ -193,10 +202,7 @@ export default function Game(): JSX.Element {
                 status: '',
                 kingPos: newKingPos,
                 lastMove: [chessState.sourceSelection, i],
-                selectedMove:
-                  chessState.selectedMove === undefined
-                    ? 0
-                    : chessState.selectedMove + 1,
+                selectedMove: moveList.length - 1,
                 castling: newCastlingStatus.newCastling,
                 moveNo: !chessState.isWhiteTurn()
                   ? chessState.moveNo + 1
@@ -244,6 +250,7 @@ export default function Game(): JSX.Element {
       <Infobar
         chessState={chessState}
         handleLine={handleLine}
+        handleSelection={handleSelection}
         lineState={lineState}
       />
     </Grid>
