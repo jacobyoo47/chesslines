@@ -76,6 +76,12 @@ const useStyles = makeStyles((theme: Theme) =>
     moveText: {
       fontSize: '.7vw',
       marginTop: theme.spacing(2),
+      marginLeft: theme.spacing(1),
+      color: theme.palette.secondary.main,
+    },
+    moveNumberText: {
+      fontSize: '.5vw',
+      marginTop: theme.spacing(2),
       marginLeft: theme.spacing(3),
       color: theme.palette.secondary.main,
     },
@@ -238,7 +244,7 @@ interface mainTabProps {
   chessState: Chess
   classes: any
   theme: Theme
-  moveListString: String
+  moveGrid: Array<any>
   lineState: { line: string[]; title: string } | undefined
   handleLine: any
 }
@@ -247,13 +253,15 @@ function MainTab({
   value,
   classes,
   theme,
-  moveListString,
+  moveGrid,
   chessState,
   lineState,
   handleLine,
 }: mainTabProps) {
   const currLineTitle =
-    lineState !== undefined ? lineState.title : 'No line selected (Sandbox)'
+    lineState !== undefined
+      ? lineState.title + ' (Quiz)'
+      : 'No line selected (Sandbox)'
   const lineIcon =
     lineState !== undefined ? (
       <GpsFixedIcon
@@ -316,9 +324,9 @@ function MainTab({
         className={classes.turnText}>
         {chessState.player} to move
       </Typography>
-      <Typography className={classes.moveText} align="left">
-        {moveListString}
-      </Typography>
+      <Grid container direction="row">
+        {moveGrid}
+      </Grid>
     </TabPanel>
   )
 }
@@ -331,7 +339,7 @@ interface linesTabProps {
 }
 
 function LinesTab({ value, classes, theme, handleLine }: linesTabProps) {
-  const [expanded, setExpanded] = React.useState<string | false>('panel1')
+  const [expanded, setExpanded] = React.useState<string | false>(false)
 
   const handleChange = (panel: string) => (
     event: React.ChangeEvent<{}>,
@@ -418,22 +426,30 @@ export default function Infobar({
   }
 
   // Create move list
-  let moveListString = ''
-  const moveList = chessState.getMoveList()
-  if (lineState === undefined) {
-    moveList.forEach((move, i) => {
-      const currMove = Math.floor(i / 2) + 1
-      moveListString += i % 2 === 0 ? currMove.toString() + '. ' + move : ' ' + move + ' '
-    })
-  } else {
-    const line = lineState!.line
-    line.forEach((move, i) => {
-      const currMove = Math.floor(i / 2) + 1
-      const moveText = i < moveList.length ? move : '??'
-      moveListString += i % 2 === 0 ? currMove.toString() + '. ' + moveText : ' ' + moveText + ' '
-    })
-  }
-  
+  const moveGrid = new Array<any>()
+  const moveListLen = chessState.getMoveList().length
+  const moveList =
+    lineState === undefined ? chessState.getMoveList() : lineState!.line
+  moveList.forEach((move, i) => {
+    const currMove = Math.floor(i / 2) + 1
+    const moveText = i < moveListLen ? move : '??'
+    if (i % 2 === 0) {
+      moveGrid.push(
+        <Grid item>
+          <Typography className={classes.moveNumberText} align="left">
+            {currMove.toString() + '.'}
+          </Typography>
+        </Grid>,
+      )
+    }
+    moveGrid.push(
+      <Grid item>
+        <Typography className={classes.moveText} align="left">
+          {moveText}
+        </Typography>
+      </Grid>,
+    )
+  })
 
   return (
     <div className={classes.root}>
@@ -464,7 +480,7 @@ export default function Infobar({
           chessState={chessState}
           classes={classes}
           theme={theme}
-          moveListString={moveListString}
+          moveGrid={moveGrid}
           lineState={lineState}
           handleLine={handleLine}
         />
