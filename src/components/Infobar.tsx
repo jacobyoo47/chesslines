@@ -146,6 +146,8 @@ interface customAccordionProps {
   line: string[]
   startFen: string
   handleLine: any
+  expanded: boolean
+  onChange: any
 }
 
 function CustomAccordion({
@@ -156,13 +158,17 @@ function CustomAccordion({
   line,
   startFen,
   handleLine,
+  expanded,
+  onChange,
 }: customAccordionProps) {
   const newLineState = { line: line, title: title }
   return (
     <Accordion
       style={{ width: '100%' }}
       square
-      className={classes.openingAccordion}>
+      className={classes.openingAccordion}
+      expanded={expanded}
+      onChange={onChange}>
       <AccordionSummary
         style={{ backgroundColor: theme.palette.error.light, color: 'black' }}
         expandIcon={<ExpandMoreIcon />}>
@@ -337,10 +343,7 @@ function LinesTab({ value, classes, theme, handleLine }: linesTabProps) {
   return (
     <TabPanel value={value} index={1}>
       <div className={classes.lineAccordionsWrapper}>
-        <Accordion
-          square
-          expanded={expanded === 'panel1'}
-          onChange={handleChange('panel1')}>
+        <Accordion square>
           <AccordionSummary
             aria-controls="panel1d-content"
             id="panel1d-header"
@@ -356,13 +359,12 @@ function LinesTab({ value, classes, theme, handleLine }: linesTabProps) {
               handleLine={handleLine}
               line={danishGambitLine}
               startFen={startPos}
+              expanded={expanded === 'panel1'}
+              onChange={handleChange('panel1')}
             />
           </AccordionDetails>
         </Accordion>
-        <Accordion
-          square
-          expanded={expanded === 'panel2'}
-          onChange={handleChange('panel2')}>
+        <Accordion square>
           <AccordionSummary
             aria-controls="panel2d-content"
             id="panel2d-header"
@@ -378,6 +380,8 @@ function LinesTab({ value, classes, theme, handleLine }: linesTabProps) {
               handleLine={handleLine}
               line={bongcloudDrawLine}
               startFen={startPos}
+              expanded={expanded === 'panel2'}
+              onChange={handleChange('panel2')}
             />
           </AccordionDetails>
         </Accordion>
