@@ -185,7 +185,7 @@ function CustomAccordion({
             color="primary"
             onClick={() => handleLine(newLineState, startFen)}
             className={classes.lineButton}>
-            Start
+            Quiz
           </Button>
           <Button
             variant="contained"
@@ -420,14 +420,20 @@ export default function Infobar({
   // Create move list
   let moveListString = ''
   const moveList = chessState.getMoveList()
-  moveList.forEach((move, i) => {
-    const currMove = Math.floor(i / 2) + 1
-    if (i % 2 === 0) {
-      moveListString += currMove.toString() + '. ' + move
-    } else {
-      moveListString += ' ' + move + ' '
-    }
-  })
+  if (lineState === undefined) {
+    moveList.forEach((move, i) => {
+      const currMove = Math.floor(i / 2) + 1
+      moveListString += i % 2 === 0 ? currMove.toString() + '. ' + move : ' ' + move + ' '
+    })
+  } else {
+    const line = lineState!.line
+    line.forEach((move, i) => {
+      const currMove = Math.floor(i / 2) + 1
+      const moveText = i < moveList.length ? move : '??'
+      moveListString += i % 2 === 0 ? currMove.toString() + '. ' + moveText : ' ' + moveText + ' '
+    })
+  }
+  
 
   return (
     <div className={classes.root}>

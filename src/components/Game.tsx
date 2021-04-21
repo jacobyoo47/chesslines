@@ -25,7 +25,11 @@ export default function Game(): JSX.Element {
   const [chessState, setState] = React.useState(getFenPosition(startPos))
   const [boardFlipped, flipBoard] = React.useState(false)
 
-  // currLine - current chess line being practiced. Array<String>() | undefined
+  /**
+   * lineState:
+   * line - array of strings for each move in the line
+   * title - displayed title in infobar
+   */
   const [lineState, setLine] = React.useState<
     { line: string[]; title: string } | undefined
   >(undefined)
