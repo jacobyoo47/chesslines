@@ -33,6 +33,7 @@ import {
   bongcloudDrawLine,
 } from '../static/positions'
 import Chess from './Chess'
+import Tracker from './Tracker'
 import React from 'react'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -242,6 +243,7 @@ function TabPanel(props: TabPanelProps) {
 interface mainTabProps {
   value: number
   chessState: Chess
+  movesState: Tracker
   classes: any
   theme: Theme
   moveGrid: Array<any>
@@ -256,6 +258,7 @@ function MainTab({
   theme,
   moveGrid,
   chessState,
+  movesState,
   lineState,
   handleLine,
   handleSelection,
@@ -331,7 +334,7 @@ function MainTab({
           style={{ color: theme.palette.warning.light }}
           onClick={() =>
             handleSelection(
-              chessState.selectedMove > 0 ? chessState.selectedMove - 1 : 0,
+              movesState.selectedMove > 0 ? movesState.selectedMove - 1 : 0,
             )
           }>
           <ArrowBackIcon />
@@ -340,9 +343,9 @@ function MainTab({
           style={{ color: theme.palette.warning.light }}
           onClick={() =>
             handleSelection(
-              chessState.selectedMove < chessState.moveList.length - 1
-                ? chessState.selectedMove + 1
-                : chessState.selectedMove,
+              movesState.selectedMove < movesState.moveNameList.length - 1
+                ? movesState.selectedMove + 1
+                : movesState.selectedMove,
             )
           }>
           <ArrowForwardIcon />
@@ -424,6 +427,7 @@ function LinesTab({ value, classes, theme, handleLine }: linesTabProps) {
 
 interface infobarProps {
   chessState: Chess
+  movesState: Tracker
   lineState: { line: string[]; title: string } | undefined
   handleLine: any
   handleSelection: any
@@ -431,6 +435,7 @@ interface infobarProps {
 
 export default function Infobar({
   chessState,
+  movesState,
   lineState,
   handleLine,
   handleSelection,
@@ -453,14 +458,14 @@ export default function Infobar({
 
   // Create move list
   const moveGrid = new Array<any>()
-  const moveListLen = chessState.getMoveList().length
+  const moveListLen = movesState.getMoveNameList().length
   const moveList =
-    lineState === undefined ? chessState.getMoveList() : lineState!.line
+    lineState === undefined ? movesState.getMoveNameList() : lineState!.line
   moveList.forEach((move, i) => {
     const currMove = Math.floor(i / 2) + 1
     const moveText = i < moveListLen ? move : '??'
     const moveColor =
-      i === chessState.selectedMove
+      i === movesState.selectedMove
         ? theme.palette.warning.dark
         : theme.palette.warning.light
     if (i % 2 === 0) {
@@ -517,6 +522,7 @@ export default function Infobar({
         <MainTab
           value={value}
           chessState={chessState}
+          movesState={movesState}
           classes={classes}
           theme={theme}
           moveGrid={moveGrid}

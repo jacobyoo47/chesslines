@@ -2,6 +2,7 @@ import React from 'react'
 import Board from './Board'
 import Infobar from './Infobar'
 import Chess from './Chess'
+import Tracker from './Tracker'
 import { getFenPosition } from './Chess'
 import { Grid } from '@material-ui/core'
 import FlipBoardButton from './FlipBoardButton'
@@ -12,7 +13,7 @@ import { startPos } from '../static/positions'
  */
 export default function Game(): JSX.Element {
   /**
-   * chessState:
+   * chessState: State of the current chess instance
    * squares - 1D array of pieces that represents board
    * kingPos - [whiteKingPos, blackKingPos]
    * player - current player's turn
@@ -22,8 +23,22 @@ export default function Game(): JSX.Element {
    * castling - [whiteLong, whiteShort, blackLong, blackShort]
    */
 
-  const [chessState, setState] = React.useState(getFenPosition(startPos))
+  const [chessState, setChessState] = React.useState(getFenPosition(startPos))
   const [boardFlipped, flipBoard] = React.useState(false)
+
+  /**
+   * movesState:
+   * moveNameList - List of strings for each move played
+   * moveList - List of chessStates for the state at each move played
+   * selectedMove - Move currently being displayed on the board
+   */
+  const [movesState, setMovesState] = React.useState(
+    new Tracker({
+      moveNameList: new Array<string>(),
+      moveList: new Array<Chess>(),
+      selectedMove: -1,
+    }),
+  )
 
   /**
    * lineState:
@@ -40,15 +55,14 @@ export default function Game(): JSX.Element {
     lineState: { line: string[]; title: string },
     startFen: string,
   ) => {
-    console.log(lineState)
-    setState(getFenPosition(startFen))
+    setChessState(getFenPosition(startFen))
     setLine(lineState)
   }
 
   const handleSelection = (index: number) => {
-    setState(
-      new Chess({
-        ...chessState,
+    setMovesState(
+      new Tracker({
+        ...movesState,
         selectedMove: index,
       }),
     )
@@ -65,15 +79,14 @@ export default function Game(): JSX.Element {
   const handleClick = (i: number) => {
     const squares = chessState.getSquares()
     const whiteTurn = chessState.isWhiteTurn()
-    // console.log(i)
-
+    console.log(movesState.getMoveList())
     if (chessState.sourceSelection === -1) {
       // No piece currently selected
       if (
         squares[i] === undefined ||
         squares[i]?.player !== chessState.player
       ) {
-        setState(
+        setChessState(
           new Chess({
             ...chessState,
             status:
@@ -83,7 +96,7 @@ export default function Game(): JSX.Element {
           }),
         )
       } else {
-        setState(
+        setChessState(
           new Chess({
             ...chessState,
             status: 'Choose destination for the selected piece',
@@ -98,7 +111,7 @@ export default function Game(): JSX.Element {
         squares[i]?.player === chessState.player
       ) {
         // Select a different piece
-        setState(
+        setChessState(
           new Chess({
             ...chessState,
             status: 'Choose destination for the selected piece',
@@ -182,8 +195,8 @@ export default function Game(): JSX.Element {
             i,
           )
 
-          const moveList = chessState.getMoveList()
-          moveList.push(currMoveName)
+          const moveNameList = movesState.getMoveNameList()
+          moveNameList.push(currMoveName)
 
           // Make sure player has played the next correct move (when currLine !== undefined)
           const currentHalfMove = chessState.isWhiteTurn()
@@ -194,25 +207,34 @@ export default function Game(): JSX.Element {
             currLine![currentHalfMove] === currMoveName
           ) {
             // Update chess state
-            setState(
-              new Chess({
-                sourceSelection: -1,
-                squares: squares,
-                player: newPlayer,
-                status: '',
-                kingPos: newKingPos,
-                lastMove: [chessState.sourceSelection, i],
-                selectedMove: moveList.length - 1,
-                castling: newCastlingStatus.newCastling,
-                moveNo: !chessState.isWhiteTurn()
-                  ? chessState.moveNo + 1
-                  : chessState.moveNo,
-                moveList: moveList,
-                fallenPieces: fallenPieces,
+            const newChessState = new Chess({
+              sourceSelection: -1,
+              squares: squares,
+              player: newPlayer,
+              status: '',
+              kingPos: newKingPos,
+              lastMove: [chessState.sourceSelection, i],
+              castling: newCastlingStatus.newCastling,
+              moveNo: !chessState.isWhiteTurn()
+                ? chessState.moveNo + 1
+                : chessState.moveNo,
+              fallenPieces: fallenPieces,
+            })
+            setChessState(newChessState)
+
+            // Update moves state
+            const newMoveList = movesState.getMoveList()
+            newMoveList.push(newChessState)
+            setMovesState(
+              new Tracker({
+                ...movesState,
+                moveNameList: moveNameList,
+                moveList: newMoveList,
+                selectedMove: moveNameList.length - 1,
               }),
             )
           } else {
-            setState(
+            setChessState(
               new Chess({
                 ...chessState,
                 status: 'Incorrect move',
@@ -222,7 +244,7 @@ export default function Game(): JSX.Element {
           }
         } else {
           // Invalid selection
-          setState(
+          setChessState(
             new Chess({
               ...chessState,
               status:
@@ -249,9 +271,10 @@ export default function Game(): JSX.Element {
       />
       <Infobar
         chessState={chessState}
+        movesState={movesState}
+        lineState={lineState}
         handleLine={handleLine}
         handleSelection={handleSelection}
-        lineState={lineState}
       />
     </Grid>
   )
