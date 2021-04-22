@@ -2,8 +2,8 @@ import Chess from './Chess'
 
 interface trackerProps {
   moveNameList: Array<string>
-  moveList: Array<Chess>,
-  selectedMove: number,
+  moveList: Array<Chess>
+  selectedMove: number
 }
 
 /**
@@ -20,11 +20,15 @@ export default class Tracker {
     this.selectedMove = state.selectedMove
   }
 
-  getMoveNameList() {
-    return this.moveNameList.slice()
+  getMoveNameList(index = -1) {
+    return index > -1
+      ? this.moveNameList.slice(0, index)
+      : this.moveNameList.slice()
   }
 
-  getMoveList() {
-    return this.moveList.slice()
+  getMoveList(index = -1) {
+    return index > -1
+      ? this.moveList.slice(0, index + 1)
+      : this.moveList.slice()
   }
 }

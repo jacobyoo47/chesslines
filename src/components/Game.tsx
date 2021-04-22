@@ -35,8 +35,8 @@ export default function Game(): JSX.Element {
   const [movesState, setMovesState] = React.useState(
     new Tracker({
       moveNameList: new Array<string>(),
-      moveList: new Array<Chess>(),
-      selectedMove: -1,
+      moveList: new Array<Chess>(chessState),
+      selectedMove: 0,
     }),
   )
 
@@ -66,6 +66,7 @@ export default function Game(): JSX.Element {
         selectedMove: index,
       }),
     )
+    setChessState(movesState.getMoveList()[index])
   }
 
   const handleFlip = () => {
@@ -79,7 +80,7 @@ export default function Game(): JSX.Element {
   const handleClick = (i: number) => {
     const squares = chessState.getSquares()
     const whiteTurn = chessState.isWhiteTurn()
-    console.log(movesState.getMoveList())
+    console.log(movesState.getMoveNameList(movesState.selectedMove))
     if (chessState.sourceSelection === -1) {
       // No piece currently selected
       if (
@@ -195,7 +196,7 @@ export default function Game(): JSX.Element {
             i,
           )
 
-          const moveNameList = movesState.getMoveNameList()
+          const moveNameList = movesState.getMoveNameList(movesState.selectedMove)
           moveNameList.push(currMoveName)
 
           // Make sure player has played the next correct move (when currLine !== undefined)
@@ -223,14 +224,14 @@ export default function Game(): JSX.Element {
             setChessState(newChessState)
 
             // Update moves state
-            const newMoveList = movesState.getMoveList()
+            const newMoveList = movesState.getMoveList(movesState.selectedMove)
             newMoveList.push(newChessState)
             setMovesState(
               new Tracker({
                 ...movesState,
                 moveNameList: moveNameList,
                 moveList: newMoveList,
-                selectedMove: moveNameList.length - 1,
+                selectedMove: moveNameList.length,
               }),
             )
           } else {

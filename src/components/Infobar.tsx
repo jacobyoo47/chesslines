@@ -343,7 +343,7 @@ function MainTab({
           style={{ color: theme.palette.warning.light }}
           onClick={() =>
             handleSelection(
-              movesState.selectedMove < movesState.moveNameList.length - 1
+              movesState.selectedMove < movesState.moveNameList.length
                 ? movesState.selectedMove + 1
                 : movesState.selectedMove,
             )
@@ -465,7 +465,7 @@ export default function Infobar({
     const currMove = Math.floor(i / 2) + 1
     const moveText = i < moveListLen ? move : '??'
     const moveColor =
-      i === movesState.selectedMove
+      i === movesState.selectedMove - 1
         ? theme.palette.warning.dark
         : theme.palette.warning.light
     if (i % 2 === 0) {
