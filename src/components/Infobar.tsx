@@ -2,36 +2,12 @@ import {
   Theme,
   createStyles,
   makeStyles,
-  withStyles,
   useTheme,
 } from '@material-ui/core/styles'
-import {
-  Typography,
-  Grid,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Tabs,
-  Tab,
-  Button,
-  Tooltip,
-} from '@material-ui/core'
-import MuiAccordion from '@material-ui/core/Accordion'
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
-import { RookIcon, KingIcon } from '../static/svgIcons'
-import NavigateNextIcon from '@material-ui/icons/NavigateNext'
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore'
-import SkipNextIcon from '@material-ui/icons/SkipNext'
-import SkipPreviousIcon from '@material-ui/icons/SkipPrevious'
-import ReplayIcon from '@material-ui/icons/Replay'
-import ClearIcon from '@material-ui/icons/Clear'
-import GpsFixedIcon from '@material-ui/icons/GpsFixed'
-import GpsNotFixedIcon from '@material-ui/icons/GpsNotFixed'
-import GitHubIcon from '@material-ui/icons/GitHub'
+import { Typography, Grid, Tabs, Tab } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper'
-import { startPos } from '../static/positions'
 import LinesTab from './LinesTab'
+import MainTab from './MainTab'
 import Chess from './Chess'
 import Tracker from './Tracker'
 import React from 'react'
@@ -106,49 +82,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const Accordion = withStyles((theme) => ({
-  root: {
-    border: `1px solid ${theme.palette.error.dark}`,
-    boxShadow: 'none',
-    '&:not(:last-child)': {
-      borderBottom: 0,
-    },
-    '&:before': {
-      display: 'none',
-    },
-    '&$expanded': {
-      margin: 'auto',
-    },
-  },
-  expanded: {},
-}))(MuiAccordion)
-
-const AccordionSummary = withStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.error.main,
-    borderBottom: `1px solid ${theme.palette.error.dark}`,
-    marginBottom: -1,
-    minHeight: 56,
-    '&$expanded': {
-      minHeight: 56,
-    },
-    color: 'white',
-  },
-  content: {
-    '&$expanded': {
-      margin: '12px 0',
-    },
-  },
-  expanded: {},
-}))(MuiAccordionSummary)
-
-const AccordionDetails = withStyles((theme) => ({
-  root: {
-    padding: 0,
-    margin: 0,
-  },
-}))(MuiAccordionDetails)
-
 interface TabPanelProps {
   children?: React.ReactNode
   index: any
@@ -178,151 +111,6 @@ function TabPanel(props: TabPanelProps) {
         </Grid>
       )}
     </div>
-  )
-}
-
-interface mainTabProps {
-  value: number
-  chessState: Chess
-  movesState: Tracker
-  classes: any
-  theme: Theme
-  moveGrid: Array<any>
-  lineState: { line: string[]; title: string } | undefined
-  handleLine: any
-  handleSelection: any
-  handleUndo: any
-}
-
-function MainTab({
-  value,
-  classes,
-  theme,
-  moveGrid,
-  chessState,
-  movesState,
-  lineState,
-  handleLine,
-  handleSelection,
-  handleUndo,
-}: mainTabProps) {
-  const currLineTitle =
-    lineState !== undefined
-      ? lineState.title + ' (Quiz)'
-      : 'No line selected (Sandbox)'
-  const lineIcon =
-    lineState !== undefined ? (
-      <GpsFixedIcon
-        className={classes.targetLineIcon}
-        style={{ color: theme.palette.primary.dark }}
-      />
-    ) : (
-      <GpsNotFixedIcon
-        className={classes.targetLineIcon}
-        style={{ color: theme.palette.primary.dark }}
-      />
-    )
-
-  return (
-    <TabPanel value={value} index={0}>
-      <AppBar position="static">
-        <Toolbar>
-          <div className={classes.leftToolbarWrapper}>
-            <RookIcon viewBox="0 0 512 512" className={classes.rookIcon} />
-            <Typography variant="h6" className={classes.infoText}>
-              chesslines --- by jacob yoo
-            </Typography>
-          </div>
-          <IconButton
-            href="https://github.com/godpng/chesslines"
-            target="_blank"
-            edge="end"
-            color="inherit"
-            aria-label="menu">
-            <GitHubIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <AppBar position="static" color="secondary">
-        <Toolbar>
-          <div className={classes.leftToolbarWrapper}>
-            {lineIcon}
-            <Typography variant="h6" className={classes.lineText}>
-              {currLineTitle}
-            </Typography>
-          </div>
-          {lineState ? (
-            <IconButton
-              edge="end"
-              aria-label="menu"
-              onClick={() => handleLine(undefined, startPos)}>
-              <ClearIcon style={{ color: theme.palette.primary.dark }} />
-            </IconButton>
-          ) : null}
-        </Toolbar>
-      </AppBar>
-      <Typography
-        variant="h6"
-        style={{
-          color:
-            chessState.player === 'white'
-              ? theme.palette.warning.light
-              : theme.palette.warning.dark,
-        }}
-        className={classes.turnText}>
-        {chessState.player} to move
-      </Typography>
-      <div id="nav-button-bar">
-        <Tooltip title="Reset" enterDelay={700} arrow>
-          <IconButton
-            className={classes.navButton}
-            onClick={() => handleSelection(0)}>
-            <SkipPreviousIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Prev" enterDelay={700} arrow>
-          <IconButton
-            className={classes.navButton}
-            onClick={() =>
-              handleSelection(
-                movesState.selectedMove > 0 ? movesState.selectedMove - 1 : 0,
-              )
-            }>
-            <NavigateBeforeIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Next" enterDelay={700} arrow>
-          <IconButton
-            className={classes.navButton}
-            onClick={() =>
-              handleSelection(
-                movesState.selectedMove < movesState.moveNameList.length
-                  ? movesState.selectedMove + 1
-                  : movesState.selectedMove,
-              )
-            }>
-            <NavigateNextIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="End" enterDelay={700} arrow>
-          <IconButton
-            className={classes.navButton}
-            onClick={() => handleSelection(movesState.moveNameList.length)}>
-            <SkipNextIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Undo" enterDelay={700} arrow>
-          <IconButton
-            className={classes.navButton}
-            onClick={() => handleUndo()}>
-            <ReplayIcon />
-          </IconButton>
-        </Tooltip>
-      </div>
-      <Grid container direction="row">
-        {moveGrid}
-      </Grid>
-    </TabPanel>
   )
 }
 
@@ -422,18 +210,20 @@ export default function Infobar({
             aria-controls={`tabpanel-1`}
           />
         </Tabs>
-        <MainTab
-          value={value}
-          chessState={chessState}
-          movesState={movesState}
-          classes={classes}
-          theme={theme}
-          moveGrid={moveGrid}
-          lineState={lineState}
-          handleLine={handleLine}
-          handleSelection={handleSelection}
-          handleUndo={handleUndo}
-        />
+        <TabPanel value={value} index={0}>
+          <MainTab
+            value={value}
+            chessState={chessState}
+            movesState={movesState}
+            classes={classes}
+            theme={theme}
+            moveGrid={moveGrid}
+            lineState={lineState}
+            handleLine={handleLine}
+            handleSelection={handleSelection}
+            handleUndo={handleUndo}
+          />
+        </TabPanel>
         <LinesTab
           value={value}
           theme={theme}
