@@ -49,6 +49,14 @@ export default function Game(): JSX.Element {
     { line: string[]; title: string } | undefined
   >(undefined)
 
+  /**
+   * customLinesState:
+   * stores the user's currently cached custom lines
+   */
+  const [customLinesState, setCustomLines] = React.useState<
+    Array<{ line: string[]; title: string }>
+  >(new Array())
+
   const currLine = lineState?.line
 
   const handleLine = (
