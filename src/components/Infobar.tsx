@@ -19,8 +19,10 @@ import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 import { RookIcon, KingIcon } from '../static/svgIcons'
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import NavigateNextIcon from '@material-ui/icons/NavigateNext'
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore'
+import SkipNextIcon from '@material-ui/icons/SkipNext'
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious'
 import ClearIcon from '@material-ui/icons/Clear'
 import GpsFixedIcon from '@material-ui/icons/GpsFixed'
 import GpsNotFixedIcon from '@material-ui/icons/GpsNotFixed'
@@ -94,6 +96,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     lineButton: {
       marginRight: theme.spacing(3),
+    },
+    navButton: {
+      color: theme.palette.primary.light,
+      margin: 0,
     },
     openingAccordion: {
       width: '100%',
@@ -329,18 +335,23 @@ function MainTab({
         className={classes.turnText}>
         {chessState.player} to move
       </Typography>
-      <div style={{ marginTop: 'auto' }}>
+      <div>
         <IconButton
-          style={{ color: theme.palette.warning.light }}
+          className={classes.navButton}
+          onClick={() => handleSelection(0)}>
+          <SkipPreviousIcon />
+        </IconButton>
+        <IconButton
+          className={classes.navButton}
           onClick={() =>
             handleSelection(
               movesState.selectedMove > 0 ? movesState.selectedMove - 1 : 0,
             )
           }>
-          <ArrowBackIcon />
+          <NavigateBeforeIcon />
         </IconButton>
         <IconButton
-          style={{ color: theme.palette.warning.light }}
+          className={classes.navButton}
           onClick={() =>
             handleSelection(
               movesState.selectedMove < movesState.moveNameList.length
@@ -348,7 +359,12 @@ function MainTab({
                 : movesState.selectedMove,
             )
           }>
-          <ArrowForwardIcon />
+          <NavigateNextIcon />
+        </IconButton>
+        <IconButton
+          className={classes.navButton}
+          onClick={() => handleSelection(movesState.moveNameList.length)}>
+          <SkipNextIcon />
         </IconButton>
       </div>
       <Grid container direction="row">
