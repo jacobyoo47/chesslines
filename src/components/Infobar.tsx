@@ -14,6 +14,7 @@ import {
   Tabs,
   Tab,
   Button,
+  Tooltip,
 } from '@material-ui/core'
 import MuiAccordion from '@material-ui/core/Accordion'
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary'
@@ -338,42 +339,52 @@ function MainTab({
         className={classes.turnText}>
         {chessState.player} to move
       </Typography>
-      <div>
-        <IconButton
-          className={classes.navButton}
-          onClick={() => handleSelection(0)}>
-          <SkipPreviousIcon />
-        </IconButton>
-        <IconButton
-          className={classes.navButton}
-          onClick={() =>
-            handleSelection(
-              movesState.selectedMove > 0 ? movesState.selectedMove - 1 : 0,
-            )
-          }>
-          <NavigateBeforeIcon />
-        </IconButton>
-        <IconButton
-          className={classes.navButton}
-          onClick={() =>
-            handleSelection(
-              movesState.selectedMove < movesState.moveNameList.length
-                ? movesState.selectedMove + 1
-                : movesState.selectedMove,
-            )
-          }>
-          <NavigateNextIcon />
-        </IconButton>
-        <IconButton
-          className={classes.navButton}
-          onClick={() => handleSelection(movesState.moveNameList.length)}>
-          <SkipNextIcon />
-        </IconButton>
-        <IconButton
-          className={classes.navButton}
-          onClick={() => handleUndo()}>
-          <ReplayIcon />
-        </IconButton>
+      <div id="nav-button-bar">
+        <Tooltip title="Reset" enterDelay={700} arrow>
+          <IconButton
+            className={classes.navButton}
+            onClick={() => handleSelection(0)}>
+            <SkipPreviousIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Prev" enterDelay={700} arrow>
+          <IconButton
+            className={classes.navButton}
+            onClick={() =>
+              handleSelection(
+                movesState.selectedMove > 0 ? movesState.selectedMove - 1 : 0,
+              )
+            }>
+            <NavigateBeforeIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Next" enterDelay={700} arrow>
+          <IconButton
+            className={classes.navButton}
+            onClick={() =>
+              handleSelection(
+                movesState.selectedMove < movesState.moveNameList.length
+                  ? movesState.selectedMove + 1
+                  : movesState.selectedMove,
+              )
+            }>
+            <NavigateNextIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="End" enterDelay={700} arrow>
+          <IconButton
+            className={classes.navButton}
+            onClick={() => handleSelection(movesState.moveNameList.length)}>
+            <SkipNextIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Undo" enterDelay={700} arrow>
+          <IconButton
+            className={classes.navButton}
+            onClick={() => handleUndo()}>
+            <ReplayIcon />
+          </IconButton>
+        </Tooltip>
       </div>
       <Grid container direction="row">
         {moveGrid}
