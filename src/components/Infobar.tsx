@@ -23,6 +23,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext'
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore'
 import SkipNextIcon from '@material-ui/icons/SkipNext'
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious'
+import ReplayIcon from '@material-ui/icons/Replay'
 import ClearIcon from '@material-ui/icons/Clear'
 import GpsFixedIcon from '@material-ui/icons/GpsFixed'
 import GpsNotFixedIcon from '@material-ui/icons/GpsNotFixed'
@@ -256,6 +257,7 @@ interface mainTabProps {
   lineState: { line: string[]; title: string } | undefined
   handleLine: any
   handleSelection: any
+  handleUndo: any
 }
 
 function MainTab({
@@ -268,6 +270,7 @@ function MainTab({
   lineState,
   handleLine,
   handleSelection,
+  handleUndo,
 }: mainTabProps) {
   const currLineTitle =
     lineState !== undefined
@@ -366,6 +369,11 @@ function MainTab({
           onClick={() => handleSelection(movesState.moveNameList.length)}>
           <SkipNextIcon />
         </IconButton>
+        <IconButton
+          className={classes.navButton}
+          onClick={() => handleUndo()}>
+          <ReplayIcon />
+        </IconButton>
       </div>
       <Grid container direction="row">
         {moveGrid}
@@ -447,6 +455,7 @@ interface infobarProps {
   lineState: { line: string[]; title: string } | undefined
   handleLine: any
   handleSelection: any
+  handleUndo: any
 }
 
 export default function Infobar({
@@ -455,6 +464,7 @@ export default function Infobar({
   lineState,
   handleLine,
   handleSelection,
+  handleUndo,
 }: infobarProps): JSX.Element {
   const theme = useTheme()
   const classes = useStyles()
@@ -545,6 +555,7 @@ export default function Infobar({
           lineState={lineState}
           handleLine={handleLine}
           handleSelection={handleSelection}
+          handleUndo={handleUndo}
         />
         <LinesTab
           value={value}

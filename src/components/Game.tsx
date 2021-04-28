@@ -59,6 +59,19 @@ export default function Game(): JSX.Element {
     setLine(lineState)
   }
 
+  const handleUndo = () => {
+    const currLen = movesState.moveNameList.length
+    const newSelection = currLen === 0 ? 0 : currLen - 1
+    setMovesState(
+      new Tracker({
+        moveNameList: movesState.getMoveNameList(currLen - 1),
+        selectedMove: newSelection,
+        moveList: movesState.getMoveList(currLen),
+      }),
+    )
+    setChessState(movesState.getMoveList()[newSelection])
+  }
+
   const handleSelection = (index: number) => {
     setMovesState(
       new Tracker({
@@ -196,7 +209,9 @@ export default function Game(): JSX.Element {
             i,
           )
 
-          const moveNameList = movesState.getMoveNameList(movesState.selectedMove)
+          const moveNameList = movesState.getMoveNameList(
+            movesState.selectedMove,
+          )
           moveNameList.push(currMoveName)
 
           // Make sure player has played the next correct move (when currLine !== undefined)
@@ -276,6 +291,7 @@ export default function Game(): JSX.Element {
         lineState={lineState}
         handleLine={handleLine}
         handleSelection={handleSelection}
+        handleUndo={handleUndo}
       />
     </Grid>
   )
