@@ -55,8 +55,16 @@ export default function Game(): JSX.Element {
     lineState: { line: string[]; title: string },
     startFen: string,
   ) => {
-    setChessState(getFenPosition(startFen))
+    const newChess = getFenPosition(startFen)
+    setChessState(newChess)
     setLine(lineState)
+    setMovesState(
+      new Tracker({
+        moveNameList: new Array<string>(),
+        moveList: new Array<Chess>(newChess),
+        selectedMove: 0,
+      }),
+    )
   }
 
   const handleUndo = () => {
