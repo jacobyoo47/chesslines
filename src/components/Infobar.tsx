@@ -79,6 +79,17 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       backgroundColor: theme.palette.error.light,
     },
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    paper: {
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
   }),
 )
 
@@ -224,12 +235,14 @@ export default function Infobar({
             handleUndo={handleUndo}
           />
         </TabPanel>
-        <LinesTab
-          value={value}
-          theme={theme}
-          classes={classes}
-          handleLine={handleLineChange}
-        />
+        <TabPanel value={value} index={1}>
+          <LinesTab
+            value={value}
+            theme={theme}
+            classes={classes}
+            handleLine={handleLineChange}
+          />
+        </TabPanel>
       </Paper>
     </div>
   )

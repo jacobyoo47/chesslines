@@ -132,51 +132,49 @@ export default function LinesTab({
   }
 
   return (
-    <TabPanel value={value} index={1}>
-      <div className={classes.lineAccordionsWrapper}>
-        <Accordion square>
-          <AccordionSummary
-            aria-controls="panel1d-content"
-            id="panel1d-header"
-            expandIcon={<ExpandMoreIcon />}>
-            <Typography>Openings</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <CustomAccordion
-              classes={classes}
-              title="Danish Gambit"
-              help="https://en.wikipedia.org/wiki/Danish_Gambit#Alekhine_Variation:_4.Nxc3"
-              theme={theme}
-              handleLine={handleLine}
-              line={danishGambitLine}
-              startFen={startPos}
-              expanded={expanded === 'panel1'}
-              onChange={handleChange('panel1')}
-            />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion square>
-          <AccordionSummary
-            aria-controls="panel2d-content"
-            id="panel2d-header"
-            expandIcon={<ExpandMoreIcon />}>
-            <Typography>Other</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <CustomAccordion
-              classes={classes}
-              title="Bongcloud Draw"
-              help="https://www.chessgames.com/perl/chessgame?gid=2029671"
-              theme={theme}
-              handleLine={handleLine}
-              line={bongcloudDrawLine}
-              startFen={startPos}
-              expanded={expanded === 'panel2'}
-              onChange={handleChange('panel2')}
-            />
-          </AccordionDetails>
-        </Accordion>
-      </div>
-    </TabPanel>
+    <div className={classes.lineAccordionsWrapper}>
+      <Accordion square>
+        <AccordionSummary
+          aria-controls="panel1d-content"
+          id="panel1d-header"
+          expandIcon={<ExpandMoreIcon />}>
+          <Typography>Openings</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <CustomAccordion
+            classes={classes}
+            title="Danish Gambit"
+            help="https://en.wikipedia.org/wiki/Danish_Gambit#Alekhine_Variation:_4.Nxc3"
+            theme={theme}
+            handleLine={handleLine}
+            line={danishGambitLine}
+            startFen={startPos}
+            expanded={expanded === 'panel1'}
+            onChange={handleChange('panel1')}
+          />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion square>
+        <AccordionSummary
+          aria-controls="panel2d-content"
+          id="panel2d-header"
+          expandIcon={<ExpandMoreIcon />}>
+          <Typography>Other</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <CustomAccordion
+            classes={classes}
+            title="Bongcloud Draw"
+            help="https://www.chessgames.com/perl/chessgame?gid=2029671"
+            theme={theme}
+            handleLine={handleLine}
+            line={bongcloudDrawLine}
+            startFen={startPos}
+            expanded={expanded === 'panel2'}
+            onChange={handleChange('panel2')}
+          />
+        </AccordionDetails>
+      </Accordion>
+    </div>
   )
 }

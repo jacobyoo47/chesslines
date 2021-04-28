@@ -6,9 +6,7 @@ import {
   IconButton,
   Tooltip,
 } from '@material-ui/core'
-import {
-  Theme,
-} from '@material-ui/core/styles'
+import { Theme } from '@material-ui/core/styles'
 import { RookIcon } from '../static/svgIcons'
 import NavigateNextIcon from '@material-ui/icons/NavigateNext'
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore'
@@ -19,9 +17,12 @@ import ClearIcon from '@material-ui/icons/Clear'
 import GpsFixedIcon from '@material-ui/icons/GpsFixed'
 import GpsNotFixedIcon from '@material-ui/icons/GpsNotFixed'
 import GitHubIcon from '@material-ui/icons/GitHub'
+import SaveIcon from '@material-ui/icons/Save'
 import { startPos } from '../static/positions'
 import Chess from './Chess'
 import Tracker from './Tracker'
+import SaveModal from './SaveModal'
+import React from 'react'
 
 interface mainTabProps {
   value: number
@@ -65,6 +66,16 @@ export default function MainTab({
       />
     )
 
+  const [open, setOpen] = React.useState(false)
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
   return (
     <>
       <AppBar position="static">
@@ -100,7 +111,21 @@ export default function MainTab({
               onClick={() => handleLine(undefined, startPos)}>
               <ClearIcon style={{ color: theme.palette.primary.dark }} />
             </IconButton>
-          ) : null}
+          ) : (
+            <>
+              <IconButton
+                edge="end"
+                aria-label="menu"
+                onClick={() => handleOpen()}>
+                <SaveIcon />
+              </IconButton>
+              <SaveModal
+                open={open}
+                classes={classes}
+                handleClose={handleClose}
+              />
+            </>
+          )}
         </Toolbar>
       </AppBar>
       <Typography
