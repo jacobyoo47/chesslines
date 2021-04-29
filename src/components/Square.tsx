@@ -30,7 +30,6 @@ function Square({
   coord,
   onClick,
 }: squareProps): JSX.Element {
-  const iconUrl = piece ? piece.iconUrl : ''
   const getBGColor = (
     isLight: boolean,
     isSelected: boolean,
@@ -51,9 +50,6 @@ function Square({
   const useStyles = makeStyles((theme) => ({
     square: {
       backgroundColor: getBGColor(isLight, isSelected, isChecked, isLastMove),
-      backgroundImage: iconUrl,
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
       height: '6vw',
       width: '6vw',
       border: '.1em solid transparent',
@@ -76,7 +72,9 @@ function Square({
 
   return (
     <>
-      <button className={classes.square} onClick={onClick}></button>
+      <button className={classes.square} onClick={onClick}>
+        {piece?.displayPiece()}
+      </button>
     </>
   )
 }

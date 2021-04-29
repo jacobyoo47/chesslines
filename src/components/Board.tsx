@@ -60,8 +60,7 @@ function renderSquare(
       piece={piece}
       currPlayer={player}
       coord={position}
-      onClick={onClick}
-    />
+      onClick={onClick}/>
   )
 }
 
