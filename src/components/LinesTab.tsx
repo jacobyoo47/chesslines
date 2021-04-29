@@ -77,43 +77,12 @@ function CustomAccordion({
   )
 }
 
-interface TabPanelProps {
-  children?: React.ReactNode
-  index: any
-  value: any
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-      {...other}>
-      {value === index && (
-        <Grid
-          container
-          direction="column"
-          alignItems="flex-start"
-          justify="space-between"
-          style={{
-            display: 'flex',
-          }}>
-          {children}
-        </Grid>
-      )}
-    </div>
-  )
-}
-
 interface linesTabProps {
   value: number
   classes: any
   theme: Theme
   handleLine: any
+  customLinesState: Array<{ line: string[]; title: string }>
 }
 
 export default function LinesTab({
@@ -121,6 +90,7 @@ export default function LinesTab({
   classes,
   theme,
   handleLine,
+  customLinesState,
 }: linesTabProps) {
   const [expanded, setExpanded] = React.useState<string | false>(false)
 
@@ -173,6 +143,29 @@ export default function LinesTab({
             expanded={expanded === 'panel2'}
             onChange={handleChange('panel2')}
           />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion square>
+        <AccordionSummary
+          araia-controls="panel3d-content"
+          id="panel3d-header"
+          expandIcon={<ExpandMoreIcon />}>
+          <Typography>Custom</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {customLinesState.map((userLine, i) => (
+            <CustomAccordion
+              classes={classes}
+              title={userLine.title}
+              help="dud"
+              theme={theme}
+              handleLine={handleLine}
+              line={userLine.line}
+              startFen={startPos}
+              expanded={expanded === `panel${i + 3}`}
+              onChange={handleChange(`panel${i + 3}`)}
+            />
+          ))}
         </AccordionDetails>
       </Accordion>
     </div>

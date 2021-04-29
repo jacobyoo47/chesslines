@@ -43,5 +43,6 @@ export const AccordionDetails = withStyles((theme) => ({
   root: {
     padding: 0,
     margin: 0,
+    display: 'block'
   },
 }))(MuiAccordionDetails)

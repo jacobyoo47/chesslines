@@ -84,8 +84,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    paper: {
-      backgroundColor: theme.palette.background.paper,
+    modalPaper: {
+      backgroundColor: theme.palette.info.light,
       border: '2px solid #000',
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
@@ -129,18 +129,22 @@ interface infobarProps {
   chessState: Chess
   movesState: Tracker
   lineState: { line: string[]; title: string } | undefined
+  customLinesState: Array<{ line: string[]; title: string }>
   handleLine: any
   handleSelection: any
   handleUndo: any
+  handleSave: any
 }
 
 export default function Infobar({
   chessState,
   movesState,
   lineState,
+  customLinesState,
   handleLine,
   handleSelection,
   handleUndo,
+  handleSave,
 }: infobarProps): JSX.Element {
   const theme = useTheme()
   const classes = useStyles()
@@ -163,6 +167,7 @@ export default function Infobar({
   const moveListLen = movesState.getMoveNameList().length
   const moveList =
     lineState === undefined ? movesState.getMoveNameList() : lineState!.line
+    
   moveList.forEach((move, i) => {
     const currMove = Math.floor(i / 2) + 1
     const moveText = i < moveListLen ? move : '??'
@@ -233,6 +238,7 @@ export default function Infobar({
             handleLine={handleLine}
             handleSelection={handleSelection}
             handleUndo={handleUndo}
+            handleSave={handleSave}
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
@@ -241,6 +247,7 @@ export default function Infobar({
             theme={theme}
             classes={classes}
             handleLine={handleLineChange}
+            customLinesState={customLinesState}
           />
         </TabPanel>
       </Paper>

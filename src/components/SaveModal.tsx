@@ -2,38 +2,76 @@ import React from 'react'
 import Modal from '@material-ui/core/Modal'
 import Backdrop from '@material-ui/core/Backdrop'
 import Fade from '@material-ui/core/Fade'
+import { useTheme } from '@material-ui/core/styles'
+import {
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  TextField,
+} from '@material-ui/core'
+import Tracker from './Tracker'
 
 interface saveModalProps {
   open: boolean
   classes: any
   handleClose: any
+  movesState: Tracker
+  moveGrid: Array<any>
+  handleSave: any
 }
 
 export default function SaveModal({
   open,
   classes,
   handleClose,
+  movesState,
+  moveGrid,
+  handleSave,
 }: saveModalProps): JSX.Element {
+  const theme = useTheme()
+  const [title, setTitle] = React.useState('')
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.target as HTMLInputElement
+    setTitle(target.value)
+  }
+
+  const handleSaveButton = () => {
+    handleSave(movesState.getMoveNameList(), title)
+    handleClose()
+  }
+
   return (
-    <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
-      className={classes.modal}
-      open={open}
+    <Dialog
       onClose={handleClose}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}>
-      <Fade in={open}>
-        <div className={classes.paper}>
-          <h2 id="transition-modal-title">Transition modal</h2>
-          <p id="transition-modal-description">
-            react-transition-group animates me.
-          </p>
-        </div>
-      </Fade>
-    </Modal>
+      aria-labelledby="simple-dialog-title"
+      open={open}
+      color="primary">
+      <DialogTitle id="simple-dialog-title" color="primary">
+        Save Line?
+      </DialogTitle>
+      <DialogContent dividers>
+        <TextField
+          fullWidth
+          required
+          value={title}
+          id="outlined-basic"
+          label="Title"
+          variant="outlined"
+          onChange={handleTitleChange}
+        />
+        <Grid container direction="row">
+          {moveGrid}
+        </Grid>
+        <Button
+          autoFocus
+          color="primary"
+          onClick={handleSaveButton}>
+          Save Line
+        </Button>
+      </DialogContent>
+    </Dialog>
   )
 }

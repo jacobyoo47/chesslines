@@ -55,7 +55,13 @@ export default function Game(): JSX.Element {
    */
   const [customLinesState, setCustomLines] = React.useState<
     Array<{ line: string[]; title: string }>
-  >(new Array())
+  >(new Array<{ line: string[]; title: string }>())
+
+  const handleSave = (line: string[], title: string) => {
+    const newCustomLines = customLinesState.slice()
+    newCustomLines.push({ line: line, title: title })
+    setCustomLines(newCustomLines)
+  }
 
   const currLine = lineState?.line
 
@@ -109,7 +115,7 @@ export default function Game(): JSX.Element {
   const handleClick = (i: number) => {
     const squares = chessState.getSquares()
     const whiteTurn = chessState.isWhiteTurn()
-    console.log(movesState.getMoveNameList(movesState.selectedMove))
+    console.log(customLinesState)
     if (chessState.sourceSelection === -1) {
       // No piece currently selected
       if (
@@ -305,9 +311,11 @@ export default function Game(): JSX.Element {
         chessState={chessState}
         movesState={movesState}
         lineState={lineState}
+        customLinesState={customLinesState}
         handleLine={handleLine}
         handleSelection={handleSelection}
         handleUndo={handleUndo}
+        handleSave={handleSave}
       />
     </Grid>
   )

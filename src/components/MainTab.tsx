@@ -35,6 +35,7 @@ interface mainTabProps {
   handleLine: any
   handleSelection: any
   handleUndo: any
+  handleSave: any
 }
 
 export default function MainTab({
@@ -48,11 +49,13 @@ export default function MainTab({
   handleLine,
   handleSelection,
   handleUndo,
+  handleSave,
 }: mainTabProps) {
   const currLineTitle =
     lineState !== undefined
       ? lineState.title + ' (Quiz)'
       : 'No line selected (Sandbox)'
+
   const lineIcon =
     lineState !== undefined ? (
       <GpsFixedIcon
@@ -75,6 +78,23 @@ export default function MainTab({
   const handleClose = () => {
     setOpen(false)
   }
+
+  const saveModalWrapper =
+    movesState.moveNameList.length > 0 ? (
+      <>
+        <IconButton edge="end" aria-label="menu" onClick={() => handleOpen()}>
+          <SaveIcon />
+        </IconButton>
+        <SaveModal
+          open={open}
+          classes={classes}
+          handleClose={handleClose}
+          movesState={movesState}
+          moveGrid={moveGrid}
+          handleSave={handleSave}
+        />
+      </>
+    ) : null
 
   return (
     <>
@@ -112,19 +132,7 @@ export default function MainTab({
               <ClearIcon style={{ color: theme.palette.primary.dark }} />
             </IconButton>
           ) : (
-            <>
-              <IconButton
-                edge="end"
-                aria-label="menu"
-                onClick={() => handleOpen()}>
-                <SaveIcon />
-              </IconButton>
-              <SaveModal
-                open={open}
-                classes={classes}
-                handleClose={handleClose}
-              />
-            </>
+            <>{saveModalWrapper}</>
           )}
         </Toolbar>
       </AppBar>
