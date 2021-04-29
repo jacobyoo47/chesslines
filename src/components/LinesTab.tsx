@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@material-ui/core/styles'
-import { Typography, Grid, Button, Toolbar } from '@material-ui/core'
+import { Typography, Button, Toolbar } from '@material-ui/core'
 import { KingIcon } from '../static/svgIcons'
 import {
   Accordion,

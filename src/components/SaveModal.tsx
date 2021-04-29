@@ -1,8 +1,4 @@
 import React from 'react'
-import Modal from '@material-ui/core/Modal'
-import Backdrop from '@material-ui/core/Backdrop'
-import Fade from '@material-ui/core/Fade'
-import { useTheme } from '@material-ui/core/styles'
 import {
   Grid,
   Dialog,
@@ -30,7 +26,6 @@ export default function SaveModal({
   moveGrid,
   handleSave,
 }: saveModalProps): JSX.Element {
-  const theme = useTheme()
   const [title, setTitle] = React.useState('')
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
