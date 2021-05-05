@@ -112,221 +112,226 @@ export default function Game(): JSX.Element {
    * Handles move to move logic
    * @param i
    */
-  const handleMove = (i: number, src = -1) => {
-    const squares = chessState.getSquares()
-    const whiteTurn = chessState.isWhiteTurn()
-    // Check if drag n drop:
-    const sourceSelection = src === -1 ? chessState.sourceSelection : src
+  const handleMove = React.useCallback(
+    (i: number, src = -1) => {
+      const squares = chessState.getSquares()
+      const whiteTurn = chessState.isWhiteTurn()
+      // Check if drag n drop:
+      const sourceSelection = src === -1 ? chessState.sourceSelection : src
 
-    if (sourceSelection === -1) {
-      // No piece currently selected
-      if (
-        squares[i] === undefined ||
-        squares[i]?.player !== chessState.player
-      ) {
-        setChessState(
-          new Chess({
-            ...chessState,
-            status:
-              'Invalid selection. Choose player ' +
-              chessState.player +
-              ' pieces.',
-          }),
-        )
-      } else {
-        setChessState(
-          new Chess({
-            ...chessState,
-            status: 'Choose destination for the selected piece',
-            sourceSelection: i,
-          }),
-        )
-      }
-    } else if (sourceSelection > -1) {
-      // Piece is already selected
-      if (
-        squares[i] !== undefined &&
-        squares[i]?.player === chessState.player
-      ) {
-        // Select a different piece
-        setChessState(
-          new Chess({
-            ...chessState,
-            status: 'Choose destination for the selected piece',
-            sourceSelection: i,
-          }),
-        )
-      } else {
-        // Attempt to move piece to destination
-        const isDestEnemyOccupied = squares[i] ? true : false
-        const currPiece = squares[sourceSelection]
-        // currPiece should never be undefined, since sourceSelection is a valid piece
-        const isMovePossible = currPiece?.isMovePossible(
-          sourceSelection,
-          i,
-          isDestEnemyOccupied,
-        )
-
-        const srcToDestPath = currPiece?.getSrcToDestPath(sourceSelection, i)
-        const enPassant = chessState.isEnPassant(currPiece, sourceSelection, i)
-        const castles = chessState.isCastles(currPiece, i)
-
+      if (sourceSelection === -1) {
+        // No piece currently selected
         if (
-          srcToDestPath !== undefined &&
-          (isMovePossible || enPassant || castles) &&
-          chessState.isMoveLegal(srcToDestPath, i, castles)
+          squares[i] === undefined ||
+          squares[i]?.player !== chessState.player
         ) {
-          // Update fallen pieces with captured piece
-          const fallenPieces = chessState.getFallenPieces()
-          if (squares[i]) fallenPieces.push(squares[i]!.name)
-
-          const newPlayer = whiteTurn ? 'black' : 'white'
-          const captured = squares[i] !== undefined
-
-          // Move piece
-          squares[i] = squares[sourceSelection]
-
-          // Update king position
-          let newKingPos = chessState.kingPos
-          if (squares[sourceSelection]?.name === 'K') {
-            newKingPos[0] = i
-          } else if (squares[sourceSelection]?.name === 'k') {
-            newKingPos[1] = i
-          }
-          squares[sourceSelection] = undefined
-
-          // Remove captured pawn in case of en passant
-          if (enPassant) {
-            const modifier = whiteTurn ? 1 : -1
-            squares[i + 8 * modifier] = undefined
-          }
-
-          const newCastlingStatus = chessState.handleCastles(
-            squares,
-            castles,
-            currPiece,
-            i,
-          )
-
-          const checkedEnemyKing = chessState.isCheck(
-            squares,
-            chessState.isWhiteTurn()
-              ? chessState.kingPos[1]
-              : chessState.kingPos[0],
-            chessState.isWhiteTurn() ? 'black' : 'white',
-          )
-
-          // Update moveList
-          const currMoveName = chessState.getMoveName(
-            currPiece!.name,
-            captured,
-            newCastlingStatus.dir,
-            checkedEnemyKing,
-            sourceSelection,
-            i,
-          )
-
-          const moveNameList = movesState.getMoveNameList(
-            movesState.selectedMove,
-          )
-          moveNameList.push(currMoveName)
-
-          // Make sure player has played the next correct move (when currLine !== undefined)
-          const currentHalfMove = chessState.isWhiteTurn()
-            ? chessState.moveNo * 2 - 2
-            : chessState.moveNo * 2 - 1
-          if (
-            currLine === undefined ||
-            currLine![currentHalfMove] === currMoveName
-          ) {
-            // Update chess state
-            const newChessState = new Chess({
-              sourceSelection: -1,
-              squares: squares,
-              player: newPlayer,
-              status: '',
-              kingPos: newKingPos,
-              lastMove: [sourceSelection, i],
-              castling: newCastlingStatus.newCastling,
-              moveNo: !chessState.isWhiteTurn()
-                ? chessState.moveNo + 1
-                : chessState.moveNo,
-              fallenPieces: fallenPieces,
-            })
-            setChessState(
-              (prevChessState) =>
-                new Chess({
-                  sourceSelection: -1,
-                  squares: squares,
-                  player: newPlayer,
-                  status: '',
-                  kingPos: newKingPos,
-                  lastMove: [sourceSelection, i],
-                  castling: newCastlingStatus.newCastling,
-                  moveNo: !prevChessState.isWhiteTurn()
-                    ? prevChessState.moveNo + 1
-                    : prevChessState.moveNo,
-                  fallenPieces: fallenPieces,
-                }),
-            )
-
-            // Update moves state
-            const newMoveList = movesState.getMoveList(movesState.selectedMove)
-            newMoveList.push(newChessState)
-            setMovesState(
-              (prevMovesState) =>
-                new Tracker({
-                  ...prevMovesState,
-                  moveNameList: moveNameList,
-                  moveList: newMoveList,
-                  selectedMove: moveNameList.length,
-                }),
-            )
-          } else {
-            setChessState(
-              new Chess({
-                ...chessState,
-                status: 'Incorrect move',
-                sourceSelection: -1,
-              }),
-            )
-          }
-        } else {
-          // Invalid selection
           setChessState(
             new Chess({
               ...chessState,
               status:
-                'Wrong selection. Choose valid source and destination again.',
-              sourceSelection: -1,
+                'Invalid selection. Choose player ' +
+                chessState.player +
+                ' pieces.',
+            }),
+          )
+        } else {
+          setChessState(
+            new Chess({
+              ...chessState,
+              status: 'Choose destination for the selected piece',
+              sourceSelection: i,
             }),
           )
         }
+      } else if (sourceSelection > -1) {
+        // Piece is already selected
+        if (
+          squares[i] !== undefined &&
+          squares[i]?.player === chessState.player
+        ) {
+          // Select a different piece
+          setChessState(
+            new Chess({
+              ...chessState,
+              status: 'Choose destination for the selected piece',
+              sourceSelection: i,
+            }),
+          )
+        } else {
+          // Attempt to move piece to destination
+          const isDestEnemyOccupied = squares[i] ? true : false
+          const currPiece = squares[sourceSelection]
+          // currPiece should never be undefined, since sourceSelection is a valid piece
+          const isMovePossible = currPiece?.isMovePossible(
+            sourceSelection,
+            i,
+            isDestEnemyOccupied,
+          )
+
+          const srcToDestPath = currPiece?.getSrcToDestPath(sourceSelection, i)
+          const enPassant = chessState.isEnPassant(
+            currPiece,
+            sourceSelection,
+            i,
+          )
+          const castles = chessState.isCastles(currPiece, i)
+
+          if (
+            srcToDestPath !== undefined &&
+            (isMovePossible || enPassant || castles) &&
+            chessState.isMoveLegal(srcToDestPath, sourceSelection, i, castles)
+          ) {
+            // Update fallen pieces with captured piece
+            const fallenPieces = chessState.getFallenPieces()
+            if (squares[i]) fallenPieces.push(squares[i]!.name)
+
+            const newPlayer = whiteTurn ? 'black' : 'white'
+            const captured = squares[i] !== undefined
+
+            // Move piece
+            squares[i] = squares[sourceSelection]
+
+            // Update king position
+            let newKingPos = chessState.kingPos
+            if (squares[sourceSelection]?.name === 'K') {
+              newKingPos[0] = i
+            } else if (squares[sourceSelection]?.name === 'k') {
+              newKingPos[1] = i
+            }
+            squares[sourceSelection] = undefined
+
+            // Remove captured pawn in case of en passant
+            if (enPassant) {
+              const modifier = whiteTurn ? 1 : -1
+              squares[i + 8 * modifier] = undefined
+            }
+
+            const newCastlingStatus = chessState.handleCastles(
+              squares,
+              castles,
+              currPiece,
+              sourceSelection,
+              i,
+            )
+
+            const checkedEnemyKing = chessState.isCheck(
+              squares,
+              chessState.isWhiteTurn()
+                ? chessState.kingPos[1]
+                : chessState.kingPos[0],
+              chessState.isWhiteTurn() ? 'black' : 'white',
+            )
+
+            // Update moveList
+            const currMoveName = chessState.getMoveName(
+              currPiece!.name,
+              captured,
+              newCastlingStatus.dir,
+              checkedEnemyKing,
+              sourceSelection,
+              i,
+            )
+
+            const moveNameList = movesState.getMoveNameList(
+              movesState.selectedMove,
+            )
+            moveNameList.push(currMoveName)
+
+            // Make sure player has played the next correct move (when currLine !== undefined)
+            const currentHalfMove = chessState.isWhiteTurn()
+              ? chessState.moveNo * 2 - 2
+              : chessState.moveNo * 2 - 1
+            if (
+              currLine === undefined ||
+              currLine![currentHalfMove] === currMoveName
+            ) {
+              // Update chess state
+              const newChessState = new Chess({
+                sourceSelection: -1,
+                squares: squares,
+                player: newPlayer,
+                status: '',
+                kingPos: newKingPos,
+                lastMove: [sourceSelection, i],
+                castling: newCastlingStatus.newCastling,
+                moveNo: !chessState.isWhiteTurn()
+                  ? chessState.moveNo + 1
+                  : chessState.moveNo,
+                fallenPieces: fallenPieces,
+              })
+              setChessState(
+                (prevChessState) =>
+                  new Chess({
+                    sourceSelection: -1,
+                    squares: squares,
+                    player: newPlayer,
+                    status: '',
+                    kingPos: newKingPos,
+                    lastMove: [sourceSelection, i],
+                    castling: newCastlingStatus.newCastling,
+                    moveNo: !prevChessState.isWhiteTurn()
+                      ? prevChessState.moveNo + 1
+                      : prevChessState.moveNo,
+                    fallenPieces: fallenPieces,
+                  }),
+              )
+
+              // Update moves state
+              const newMoveList = movesState.getMoveList(
+                movesState.selectedMove,
+              )
+              newMoveList.push(newChessState)
+              setMovesState(
+                (prevMovesState) =>
+                  new Tracker({
+                    ...prevMovesState,
+                    moveNameList: moveNameList,
+                    moveList: newMoveList,
+                    selectedMove: moveNameList.length,
+                  }),
+              )
+            } else {
+              setChessState(
+                new Chess({
+                  ...chessState,
+                  status: 'Incorrect move',
+                  sourceSelection: -1,
+                }),
+              )
+            }
+          } else {
+            // Invalid selection
+            setChessState(
+              new Chess({
+                ...chessState,
+                status:
+                  'Wrong selection. Choose valid source and destination again.',
+                sourceSelection: -1,
+              }),
+            )
+          }
+        }
       }
-    }
-  }
+    },
+    [chessState, setChessState, movesState, setMovesState, currLine],
+  )
 
   /**
    * Handles drag-n-drop
    * @param i
    */
-  const handleDrop = React.useCallback(
-    (i: number, src: number) => {
-      console.log(src)
-      console.log(i)
-
-      handleMove(i, src)
-    },
-    [handleMove],
-  )
+  const handleDrop = (i: number, src: number) => {
+    // console.log(chessState)
+    handleMove(i, src)
+  }
 
   /**
    * Handles click-to-move
    * @param i
    */
   const handleClick = (i: number) => {
+    // console.log(chessState)
     handleMove(i)
-    console.log(chessState)
   }
 
   return (

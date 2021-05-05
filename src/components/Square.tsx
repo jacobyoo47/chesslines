@@ -83,7 +83,6 @@ function Square({
       PieceTypes.KING,
     ],
     drop: (item: { coord: number }) => {
-      console.log(item.coord)
       onDrag(coord, item.coord)
     },
     collect: (monitor) => ({

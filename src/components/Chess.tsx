@@ -282,18 +282,18 @@ export default class Chess {
   /**
    * Simulates a move and checks if it puts the current player's king in check
    */
-  isKingInCheck(dest: number) {
+  isKingInCheck(src: number, dest: number) {
     // Check for checks -- simulate move
     const checkSquares = this.getSquares()
     // Get new kingPos if we're moving the king
     let tempKingPos
-    if (checkSquares[this.sourceSelection]?.name.toLowerCase() === 'k') {
+    if (checkSquares[src]?.name.toLowerCase() === 'k') {
       tempKingPos = dest
     } else {
       tempKingPos = this.isWhiteTurn() ? this.kingPos[0] : this.kingPos[1]
     }
-    checkSquares[dest] = checkSquares[this.sourceSelection]
-    checkSquares[this.sourceSelection] = undefined
+    checkSquares[dest] = checkSquares[src]
+    checkSquares[src] = undefined
 
     if (this.isCheck(checkSquares, tempKingPos, this.player)) {
       console.log('cant move due to check')
@@ -306,7 +306,7 @@ export default class Chess {
   /**
    * Check that move is not blocked (isMoveClear) and does not put own king in check.
    */
-  isMoveLegal(srcToDestPath: number[], dest: number, castles: boolean) {
+  isMoveLegal(srcToDestPath: number[], src: number, dest: number, castles: boolean) {
     if (!this.isMoveClear(this.squares, srcToDestPath)) {
       return false
     }
@@ -323,14 +323,14 @@ export default class Chess {
       const castleDirection = dest === 2 || dest === 58
       const pathEnd = castleDirection ? dest - 1 : dest
       if (castleDirection) {
-        for (let i = this.sourceSelection; i > pathEnd; i -= 1) {
-          if (this.isKingInCheck(i)) {
+        for (let i = src; i > pathEnd; i -= 1) {
+          if (this.isKingInCheck(src, i)) {
             return false
           }
         }
       } else {
-        for (let i = this.sourceSelection; i < pathEnd; i += 1) {
-          if (this.isKingInCheck(i)) {
+        for (let i = src; i < pathEnd; i += 1) {
+          if (this.isKingInCheck(src, i)) {
             return false
           }
         }
@@ -338,7 +338,7 @@ export default class Chess {
     }
 
     // Check that move does not put king in check
-    return !this.isKingInCheck(dest)
+    return !this.isKingInCheck(src, dest)
   }
 
   /**
@@ -349,6 +349,7 @@ export default class Chess {
     squares: Array<Piece | undefined>,
     castles: boolean,
     currPiece: Piece | undefined,
+    src: number,
     dest: number,
   ) {
     const whiteTurn = this.isWhiteTurn()
@@ -391,15 +392,15 @@ export default class Chess {
     } else if (currPiece?.name.toLowerCase() === 'r') {
       // Edit castling chessState if rook or king is moved
       if (whiteTurn) {
-        if (newCastling[1] && this.sourceSelection === 63) {
+        if (newCastling[1] && src === 63) {
           newCastling[1] = false
-        } else if (newCastling[0] && this.sourceSelection === 56) {
+        } else if (newCastling[0] && src === 56) {
           newCastling[0] = false
         }
       } else {
-        if (newCastling[3] && this.sourceSelection === 7) {
+        if (newCastling[3] && src === 7) {
           newCastling[3] = false
-        } else if (newCastling[2] && this.sourceSelection === 0) {
+        } else if (newCastling[2] && src === 0) {
           newCastling[2] = false
         }
       }
@@ -407,14 +408,14 @@ export default class Chess {
       if (
         whiteTurn &&
         (newCastling[0] || newCastling[1]) &&
-        this.sourceSelection === 60
+        src === 60
       ) {
         newCastling[0] = false
         newCastling[1] = false
       } else if (
         !whiteTurn &&
         (newCastling[2] || newCastling[3]) &&
-        this.sourceSelection === 4
+        src === 4
       ) {
         newCastling[2] = false
         newCastling[3] = false
