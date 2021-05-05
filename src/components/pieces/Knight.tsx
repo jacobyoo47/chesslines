@@ -1,5 +1,6 @@
 import Piece from './Piece'
 import { wKnight, bKnight } from '../../static/pieceIcons'
+import { PieceTypes } from '../../static/pieceDragTypes'
 
 export default class Knight extends Piece {
   constructor(player: string) {
@@ -7,6 +8,7 @@ export default class Knight extends Piece {
       player: player,
       icon: player === 'white' ? wKnight : bKnight,
       name: player === 'white' ? 'N' : 'n',
+      dragType: PieceTypes.KNIGHT, 
     }
     super(pieceProps)
   }

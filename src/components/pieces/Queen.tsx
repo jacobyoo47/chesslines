@@ -1,6 +1,7 @@
 import Piece from './Piece'
 import convertXY from '../../helpers/pieceHelpers'
 import { wQueen, bQueen } from '../../static/pieceIcons'
+import { PieceTypes } from '../../static/pieceDragTypes'
 
 export default class Queen extends Piece {
   constructor(player: string) {
@@ -8,6 +9,7 @@ export default class Queen extends Piece {
       player: player,
       icon: player === 'white' ? wQueen : bQueen,
       name: player === 'white' ? 'Q' : 'q',
+      dragType: PieceTypes.QUEEN,
     }
     super(pieceProps)
   }

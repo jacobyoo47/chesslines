@@ -109,14 +109,16 @@ export default function Game(): JSX.Element {
   }
 
   /**
-   * Handles click-to-move
+   * Handles move to move logic
    * @param i
    */
-  const handleClick = (i: number) => {
+  const handleMove = (i: number, src = -1) => {
     const squares = chessState.getSquares()
     const whiteTurn = chessState.isWhiteTurn()
-    console.log(customLinesState)
-    if (chessState.sourceSelection === -1) {
+    // Check if drag n drop:
+    const sourceSelection = src === -1 ? chessState.sourceSelection : src
+
+    if (sourceSelection === -1) {
       // No piece currently selected
       if (
         squares[i] === undefined ||
@@ -140,7 +142,7 @@ export default function Game(): JSX.Element {
           }),
         )
       }
-    } else if (chessState.sourceSelection > -1) {
+    } else if (sourceSelection > -1) {
       // Piece is already selected
       if (
         squares[i] !== undefined &&
@@ -157,23 +159,16 @@ export default function Game(): JSX.Element {
       } else {
         // Attempt to move piece to destination
         const isDestEnemyOccupied = squares[i] ? true : false
-        const currPiece = squares[chessState.sourceSelection]
+        const currPiece = squares[sourceSelection]
         // currPiece should never be undefined, since sourceSelection is a valid piece
         const isMovePossible = currPiece?.isMovePossible(
-          chessState.sourceSelection,
+          sourceSelection,
           i,
           isDestEnemyOccupied,
         )
 
-        const srcToDestPath = currPiece?.getSrcToDestPath(
-          chessState.sourceSelection,
-          i,
-        )
-        const enPassant = chessState.isEnPassant(
-          currPiece,
-          chessState.sourceSelection,
-          i,
-        )
+        const srcToDestPath = currPiece?.getSrcToDestPath(sourceSelection, i)
+        const enPassant = chessState.isEnPassant(currPiece, sourceSelection, i)
         const castles = chessState.isCastles(currPiece, i)
 
         if (
@@ -189,16 +184,16 @@ export default function Game(): JSX.Element {
           const captured = squares[i] !== undefined
 
           // Move piece
-          squares[i] = squares[chessState.sourceSelection]
+          squares[i] = squares[sourceSelection]
 
           // Update king position
           let newKingPos = chessState.kingPos
-          if (squares[chessState.sourceSelection]?.name === 'K') {
+          if (squares[sourceSelection]?.name === 'K') {
             newKingPos[0] = i
-          } else if (squares[chessState.sourceSelection]?.name === 'k') {
+          } else if (squares[sourceSelection]?.name === 'k') {
             newKingPos[1] = i
           }
-          squares[chessState.sourceSelection] = undefined
+          squares[sourceSelection] = undefined
 
           // Remove captured pawn in case of en passant
           if (enPassant) {
@@ -227,7 +222,7 @@ export default function Game(): JSX.Element {
             captured,
             newCastlingStatus.dir,
             checkedEnemyKing,
-            chessState.sourceSelection,
+            sourceSelection,
             i,
           )
 
@@ -251,25 +246,41 @@ export default function Game(): JSX.Element {
               player: newPlayer,
               status: '',
               kingPos: newKingPos,
-              lastMove: [chessState.sourceSelection, i],
+              lastMove: [sourceSelection, i],
               castling: newCastlingStatus.newCastling,
               moveNo: !chessState.isWhiteTurn()
                 ? chessState.moveNo + 1
                 : chessState.moveNo,
               fallenPieces: fallenPieces,
             })
-            setChessState(newChessState)
+            setChessState(
+              (prevChessState) =>
+                new Chess({
+                  sourceSelection: -1,
+                  squares: squares,
+                  player: newPlayer,
+                  status: '',
+                  kingPos: newKingPos,
+                  lastMove: [sourceSelection, i],
+                  castling: newCastlingStatus.newCastling,
+                  moveNo: !prevChessState.isWhiteTurn()
+                    ? prevChessState.moveNo + 1
+                    : prevChessState.moveNo,
+                  fallenPieces: fallenPieces,
+                }),
+            )
 
             // Update moves state
             const newMoveList = movesState.getMoveList(movesState.selectedMove)
             newMoveList.push(newChessState)
             setMovesState(
-              new Tracker({
-                ...movesState,
-                moveNameList: moveNameList,
-                moveList: newMoveList,
-                selectedMove: moveNameList.length,
-              }),
+              (prevMovesState) =>
+                new Tracker({
+                  ...prevMovesState,
+                  moveNameList: moveNameList,
+                  moveList: newMoveList,
+                  selectedMove: moveNameList.length,
+                }),
             )
           } else {
             setChessState(
@@ -294,6 +305,30 @@ export default function Game(): JSX.Element {
       }
     }
   }
+
+  /**
+   * Handles drag-n-drop
+   * @param i
+   */
+  const handleDrop = React.useCallback(
+    (i: number, src: number) => {
+      console.log(src)
+      console.log(i)
+
+      handleMove(i, src)
+    },
+    [handleMove],
+  )
+
+  /**
+   * Handles click-to-move
+   * @param i
+   */
+  const handleClick = (i: number) => {
+    handleMove(i)
+    console.log(chessState)
+  }
+
   return (
     <Grid
       container
@@ -305,6 +340,7 @@ export default function Game(): JSX.Element {
       <Board
         chessState={chessState}
         squareClick={handleClick}
+        squareDrop={handleDrop}
         boardFlipped={boardFlipped}
       />
       <Infobar

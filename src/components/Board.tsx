@@ -1,4 +1,6 @@
 import React from 'react'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import Chess from './Chess'
 import { makeStyles } from '@material-ui/core/styles'
 import Square from './Square'
@@ -44,11 +46,11 @@ function renderSquare(
   isLight: boolean,
   isChecked: boolean,
   isLastMove: boolean,
-  isBoardFlipped: boolean,
   sourceSelection: number,
   position: number,
   player: string,
-  onClick: React.MouseEventHandler<HTMLButtonElement>,
+  onClick: React.MouseEventHandler<HTMLDivElement>,
+  onDrag: any,
 ): JSX.Element {
   return (
     <Square
@@ -56,17 +58,19 @@ function renderSquare(
       isSelected={sourceSelection === position}
       isChecked={isChecked}
       isLastMove={isLastMove}
-      isBoardFlipped={isBoardFlipped}
       piece={piece}
       currPlayer={player}
       coord={position}
-      onClick={onClick}/>
+      onClick={onClick}
+      onDrag={onDrag}
+    />
   )
 }
 
 interface boardProps {
   chessState: Chess
   squareClick: any
+  squareDrop: any
   boardFlipped: boolean
 }
 
@@ -76,6 +80,7 @@ interface boardProps {
 function Board({
   chessState,
   squareClick,
+  squareDrop,
   boardFlipped,
 }: boardProps): JSX.Element {
   const board = []
@@ -151,11 +156,11 @@ function Board({
           squareIsLight,
           checkSquare,
           isLastMoveSquare,
-          boardFlipped,
           chessState.sourceSelection,
           coord,
           chessState.player,
           () => squareClick(coord),
+          squareDrop,
         ),
       )
     }
@@ -178,9 +183,11 @@ function Board({
   )
 
   return (
-    <div>
-      <div className={classes.root}>{board}</div>
-    </div>
+    <DndProvider backend={HTML5Backend}>
+      <div>
+        <div className={classes.root}>{board}</div>
+      </div>
+    </DndProvider>
   )
 }
 

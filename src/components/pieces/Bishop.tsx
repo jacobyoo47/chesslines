@@ -1,13 +1,15 @@
 import Piece from './Piece'
 import convertXY from '../../helpers/pieceHelpers'
 import { wBishop, bBishop } from '../../static/pieceIcons'
+import { PieceTypes } from '../../static/pieceDragTypes'
 
 export default class Bishop extends Piece {
   constructor(player: string) {
     const pieceProps = {
       player: player,
       icon: player === 'white' ? wBishop : bBishop,
-      name: player === 'white' ? 'B' : 'b'
+      name: player === 'white' ? 'B' : 'b',
+      dragType: PieceTypes.BISHOP, 
     }
     super(pieceProps)
   }

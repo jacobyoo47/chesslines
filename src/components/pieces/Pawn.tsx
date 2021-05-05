@@ -1,5 +1,6 @@
 import Piece from './Piece'
 import { wPawn, bPawn } from '../../static/pieceIcons'
+import { PieceTypes } from '../../static/pieceDragTypes'
 
 const wPawnInitial = [48, 49, 50, 51, 52, 53, 54, 55]
 const bPawnInitial = [8, 9, 10, 11, 12, 13, 14, 15]
@@ -10,6 +11,7 @@ export default class Pawn extends Piece {
       player: player,
       icon: player === 'white' ? wPawn : bPawn,
       name: player === 'white' ? 'P' : 'p',
+      dragType: PieceTypes.PAWN,
     }
     super(pieceProps)
   }

@@ -1,5 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles'
 import Piece from './pieces/Piece'
+import { DisplayPiece } from './pieces/Piece'
+import { PieceTypes } from '../static/pieceDragTypes'
+import { useDrop } from 'react-dnd'
 
 const lightSquare = '#DDA15E'
 const darkSquare = '#BC6C25'
@@ -12,11 +15,11 @@ interface squareProps {
   isSelected: boolean
   isChecked: boolean
   isLastMove: boolean
-  isBoardFlipped: boolean
   piece?: Piece
   currPlayer: String
   coord: number
-  onClick: React.MouseEventHandler<HTMLButtonElement>
+  onClick: React.MouseEventHandler<HTMLDivElement>
+  onDrag: any
 }
 
 function Square({
@@ -24,11 +27,11 @@ function Square({
   isSelected,
   isChecked,
   isLastMove,
-  isBoardFlipped,
   piece,
   currPlayer,
   coord,
   onClick,
+  onDrag,
 }: squareProps): JSX.Element {
   const getBGColor = (
     isLight: boolean,
@@ -70,11 +73,29 @@ function Square({
 
   const classes = useStyles()
 
+  const [{ isOver }, drop] = useDrop({
+    accept: [
+      PieceTypes.KNIGHT,
+      PieceTypes.BISHOP,
+      PieceTypes.PAWN,
+      PieceTypes.ROOK,
+      PieceTypes.QUEEN,
+      PieceTypes.KING,
+    ],
+    drop: (item: { coord: number }) => {
+      console.log(item.coord)
+      onDrag(coord, item.coord)
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  })
+
   return (
     <>
-      <button className={classes.square} onClick={onClick}>
-        {piece?.displayPiece()}
-      </button>
+      <div ref={drop} className={classes.square} onClick={onClick}>
+        {DisplayPiece(piece, coord)}
+      </div>
     </>
   )
 }
