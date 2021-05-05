@@ -1,11 +1,12 @@
 import { useDrag } from 'react-dnd'
 
-export function DisplayPiece(piece: Piece | undefined, coord: number) {
+export function DisplayPiece(piece: Piece | undefined, coord: number, currPlayer: String) {
   // Always render useDrag hooks since
   // React requires the same amount of hooks to be rendered at all times
   const [{ isDragging }, drag] = useDrag({
     type: piece?.dragType || 'none',
     item: { coord },
+    canDrag: piece?.player === currPlayer,
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

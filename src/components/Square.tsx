@@ -93,7 +93,7 @@ function Square({
   return (
     <>
       <div ref={drop} className={classes.square} onClick={onClick}>
-        {DisplayPiece(piece, coord)}
+        {DisplayPiece(piece, coord, currPlayer)}
       </div>
     </>
   )
