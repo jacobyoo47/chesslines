@@ -73,7 +73,7 @@ function Square({
 
   const classes = useStyles()
 
-  const [{ isOver }, drop] = useDrop({
+  const [, drop] = useDrop({
     accept: [
       PieceTypes.KNIGHT,
       PieceTypes.BISHOP,
