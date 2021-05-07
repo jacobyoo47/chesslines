@@ -32,9 +32,9 @@ const chessTheme = createMuiTheme({
     },
 
     error: {
-      main: '#858783',
-      dark: '#777975',
-      light: '#A9ABA8',
+      main: '#87282b',
+      dark: '#4c1718',
+      light: '#c9b9b9',
     },
   },
 })

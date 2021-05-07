@@ -8,6 +8,12 @@ import { Grid } from '@material-ui/core'
 import FlipBoardButton from './FlipBoardButton'
 import { startPos } from '../static/positions'
 
+export interface lineProps {
+  line: string[],
+  title: string,
+  desc: string,
+}
+
 /**
  * Wrapper for the Board / Infobar. Handles the chessState and click-to-move.
  */
@@ -44,9 +50,10 @@ export default function Game(): JSX.Element {
    * lineState:
    * line - array of strings for each move in the line
    * title - displayed title in infobar
+   * desc - displayed desc in infobar
    */
   const [lineState, setLine] = React.useState<
-    { line: string[]; title: string } | undefined
+    lineProps | undefined
   >(undefined)
 
   /**
@@ -54,19 +61,19 @@ export default function Game(): JSX.Element {
    * stores the user's currently cached custom lines
    */
   const [customLinesState, setCustomLines] = React.useState<
-    Array<{ line: string[]; title: string }>
-  >(new Array<{ line: string[]; title: string }>())
+    Array<lineProps>
+  >(new Array<lineProps>())
 
-  const handleSave = (line: string[], title: string) => {
+  const handleSave = (line: string[], title: string, desc: string) => {
     const newCustomLines = customLinesState.slice()
-    newCustomLines.push({ line: line, title: title })
+    newCustomLines.push({ line: line, title: title, desc: desc })
     setCustomLines(newCustomLines)
   }
 
   const currLine = lineState?.line
 
   const handleLine = (
-    lineState: { line: string[]; title: string },
+    lineState: lineProps,
     startFen: string,
   ) => {
     const newChess = getFenPosition(startFen)

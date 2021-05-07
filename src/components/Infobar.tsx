@@ -4,12 +4,13 @@ import {
   makeStyles,
   useTheme,
 } from '@material-ui/core/styles'
-import { Typography, Grid, Tabs, Tab } from '@material-ui/core'
+import { Typography, Grid, Tabs, Tab, ThemeProvider } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper'
 import LinesTab from './LinesTab'
 import MainTab from './MainTab'
 import Chess from './Chess'
 import Tracker from './Tracker'
+import { lineProps } from './Game'
 import React from 'react'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -71,6 +72,12 @@ const useStyles = makeStyles((theme: Theme) =>
     lineButton: {
       marginRight: theme.spacing(3),
     },
+    lineDesc: {
+      fontSize: 14,
+      color: theme.palette.error.light,
+      paddingTop: theme.spacing(2),
+      paddingLeft: theme.spacing(3),
+    },
     navButton: {
       color: theme.palette.primary.light,
       margin: 0,
@@ -79,16 +86,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       backgroundColor: theme.palette.error.light,
     },
-    modal: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    modalPaper: {
-      backgroundColor: theme.palette.info.light,
-      border: '2px solid #000',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
+    saveModalTextField: {
+      marginBottom: theme.spacing(2),
     },
   }),
 )
@@ -129,7 +128,7 @@ interface infobarProps {
   chessState: Chess
   movesState: Tracker
   lineState: { line: string[]; title: string } | undefined
-  customLinesState: Array<{ line: string[]; title: string }>
+  customLinesState: Array<lineProps>
   handleLine: any
   handleSelection: any
   handleUndo: any

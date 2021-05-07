@@ -148,7 +148,7 @@ export default function MainTab({
         {chessState.player} to move
       </Typography>
       <div id="nav-button-bar">
-        <Tooltip title="Reset" enterDelay={700} arrow>
+        <Tooltip title="Start" enterDelay={700} arrow>
           <IconButton
             className={classes.navButton}
             onClick={() => handleSelection(0)}>

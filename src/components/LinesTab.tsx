@@ -1,7 +1,6 @@
 import React from 'react'
 import { Theme } from '@material-ui/core/styles'
 import { Typography, Button, Toolbar } from '@material-ui/core'
-import { KingIcon } from '../static/svgIcons'
 import {
   Accordion,
   AccordionSummary,
@@ -13,9 +12,13 @@ import {
   danishGambitLine,
   bongcloudDrawLine,
 } from '../static/positions'
+import {
+  lineProps
+} from './Game'
 
 interface customAccordionProps {
   title: String
+  desc: String
   help: string
   theme: Theme
   classes: any
@@ -28,6 +31,7 @@ interface customAccordionProps {
 
 function CustomAccordion({
   title,
+  desc,
   help,
   theme,
   classes,
@@ -37,24 +41,40 @@ function CustomAccordion({
   expanded,
   onChange,
 }: customAccordionProps) {
-  const newLineState = { line: line, title: title }
+  const newLineState = { line: line, title: title, desc: desc }
+
+  let lineString = ''
+  for (let i = 0; i < line.length; i++) {
+    if (i % 2 === 0) {
+      lineString += (i / 2 + 1).toString() + '. '
+    }
+    lineString += line[i] + ' '
+  }
   return (
     <Accordion
-      style={{ width: '100%' }}
+      // style={{ width: '100%' }}
       square
       className={classes.openingAccordion}
       expanded={expanded}
       onChange={onChange}>
       <AccordionSummary
-        style={{ backgroundColor: theme.palette.error.light, color: 'black' }}
+        style={{
+          backgroundColor: theme.palette.error.main,
+          minHeight: 36,
+          color: 'black',
+          height: 36,
+        }}
         expandIcon={<ExpandMoreIcon />}>
-        <Toolbar>
-          <KingIcon />
-          <Typography variant="h6">{title}</Typography>
-        </Toolbar>
+        <Typography style={{ fontSize: 14 }}>{title}</Typography>
       </AccordionSummary>
       <AccordionDetails
         style={{ minHeight: 60, backgroundColor: theme.palette.error.dark }}>
+        <Typography align="left" className={classes.lineDesc}>
+          Description: {desc}
+        </Typography>
+        <Typography align="left" className={classes.lineDesc}>
+          Line: {lineString}
+        </Typography>
         <Toolbar>
           <Button
             variant="contained"
@@ -82,7 +102,7 @@ interface linesTabProps {
   classes: any
   theme: Theme
   handleLine: any
-  customLinesState: Array<{ line: string[]; title: string }>
+  customLinesState: Array<lineProps>
 }
 
 export default function LinesTab({
@@ -108,12 +128,13 @@ export default function LinesTab({
           aria-controls="panel1d-content"
           id="panel1d-header"
           expandIcon={<ExpandMoreIcon />}>
-          <Typography>Openings</Typography>
+          <Typography variant="h6">Openings</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <CustomAccordion
             classes={classes}
             title="Danish Gambit"
+            desc="Alekhine Variation"
             help="https://en.wikipedia.org/wiki/Danish_Gambit#Alekhine_Variation:_4.Nxc3"
             theme={theme}
             handleLine={handleLine}
@@ -129,12 +150,13 @@ export default function LinesTab({
           aria-controls="panel2d-content"
           id="panel2d-header"
           expandIcon={<ExpandMoreIcon />}>
-          <Typography>Other</Typography>
+          <Typography variant="h6">Other</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <CustomAccordion
             classes={classes}
             title="Bongcloud Draw"
+            desc="Magnus Carlson vs. Hikaru Nakamura, Magnus Carlsen Invitational (2021) (rapid), chess24.com INT, rd 15, Mar-15"
             help="https://www.chessgames.com/perl/chessgame?gid=2029671"
             theme={theme}
             handleLine={handleLine}
@@ -150,13 +172,14 @@ export default function LinesTab({
           araia-controls="panel3d-content"
           id="panel3d-header"
           expandIcon={<ExpandMoreIcon />}>
-          <Typography>Custom</Typography>
+          <Typography variant="h6">Custom</Typography>
         </AccordionSummary>
         <AccordionDetails>
           {customLinesState.map((userLine, i) => (
             <CustomAccordion
               classes={classes}
               title={userLine.title}
+              desc={userLine.desc}
               help="dud"
               theme={theme}
               handleLine={handleLine}

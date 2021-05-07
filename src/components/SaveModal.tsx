@@ -27,14 +27,20 @@ export default function SaveModal({
   handleSave,
 }: saveModalProps): JSX.Element {
   const [title, setTitle] = React.useState('')
+  const [desc, setDesc] = React.useState('')
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target as HTMLInputElement
     setTitle(target.value)
   }
 
+  const handleDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.target as HTMLInputElement
+    setDesc(target.value)
+  }
+
   const handleSaveButton = () => {
-    handleSave(movesState.getMoveNameList(), title)
+    handleSave(movesState.getMoveNameList(), title, desc)
     handleClose()
   }
 
@@ -56,14 +62,22 @@ export default function SaveModal({
           label="Title"
           variant="outlined"
           onChange={handleTitleChange}
+          className={classes.saveModalTextField}
+        />
+        <TextField
+          fullWidth
+          required
+          value={desc}
+          id="outlined-basic"
+          label="Desc"
+          variant="outlined"
+          onChange={handleDescChange}
+          className={classes.saveModalTextField}
         />
         <Grid container direction="row">
           {moveGrid}
         </Grid>
-        <Button
-          autoFocus
-          color="primary"
-          onClick={handleSaveButton}>
+        <Button autoFocus color="primary" onClick={handleSaveButton}>
           Save Line
         </Button>
       </DialogContent>

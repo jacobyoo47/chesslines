@@ -5,7 +5,7 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails'
 
 export const Accordion = withStyles((theme) => ({
   root: {
-    border: `1px solid ${theme.palette.error.dark}`,
+    // border: `1px solid ${theme.palette.warning.main}`,
     boxShadow: 'none',
     '&:not(:last-child)': {
       borderBottom: 0,
@@ -22,14 +22,14 @@ export const Accordion = withStyles((theme) => ({
 
 export const AccordionSummary = withStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.error.main,
-    borderBottom: `1px solid ${theme.palette.error.dark}`,
+    backgroundColor: theme.palette.info.dark,
+    borderBottom: `4px solid ${theme.palette.info.light}`,
     marginBottom: -1,
     minHeight: 56,
     '&$expanded': {
       minHeight: 56,
     },
-    color: 'white',
+    color: 'black',
   },
   content: {
     '&$expanded': {
